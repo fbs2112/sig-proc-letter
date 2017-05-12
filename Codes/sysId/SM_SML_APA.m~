@@ -38,34 +38,34 @@ for LIndex = 1:length(L)
     u = zeros(L(LIndex)+1,1);
     u(1) = 1;
     
-    globalLength = maxRuns + M + L(LIndex) - 1;
+    globalLength  
     count = zeros(maxIt,1);
-    e2 = zeros(globalLength,maxIt);
+    e2 = zeros(maxRuns + M + L(LIndex) - 1,maxIt);
     for index = 1:maxIt
         
         xFlip = zeros(M,L(LIndex)+1);
-        yAux = zeros(globalLength,L(LIndex)+1,K);
-        yAux2 = zeros(K,globalLength,L(LIndex)+1);
-        y = zeros(globalLength,L(LIndex)+1);
+        yAux = zeros(maxRuns + M + L(LIndex) - 1,L(LIndex)+1,K);
+        yAux2 = zeros(K,maxRuns + M + L(LIndex) - 1,L(LIndex)+1);
+        y = zeros(maxRuns + M + L(LIndex) - 1,L(LIndex)+1);
         Y = zeros(L(LIndex)+1,K);
         T = zeros(L(LIndex)+1,M*K);
         
         d = zeros(L(LIndex)+1,maxRuns);
         e = zeros(L(LIndex)+1,maxRuns);
         
-        xp = zeros(globalLength,1);
+        xp = zeros(maxRuns + M + L(LIndex) - 1,1);
         xp(M + L(LIndex),1) = 2;
-        delta = zeros(globalLength,1);
+        delta = zeros(maxRuns + M + L(LIndex) - 1,1);
         delta(M + L(LIndex),1) = 1e-3;
-        mu = zeros(globalLength,1);
+        mu = zeros()
         
         wC = zeros(M*K,maxRuns);
         index
-        input = randn(globalLength,1);
-%         input = filter([1 0],[1 -0.9],input);
+        input = randn(maxRuns + M + L(LIndex) - 1,1);
+        input = filter([1 0],[1 -0.9],input);
         input = input.*sqrt(signalPower/var(input));
 
-        n = randn(globalLength,1);
+        n = randn(maxRuns*2,1);
         n = n.*sqrt(noisePower/var(n));
 
         for j = 1:K - 1
@@ -147,4 +147,4 @@ for LIndex = 1:length(L)
     e3(:,LIndex) = mean(e2,2);
 end
 
-save(['.' filesep 'resultsTest' filesep 'resultsSM_SML1.mat'],'e3','meanCount');
+save(['.' filesep 'resultsTest' filesep 'results07.mat'],'e3','meanCount');

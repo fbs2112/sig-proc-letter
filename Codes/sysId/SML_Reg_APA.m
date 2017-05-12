@@ -22,10 +22,6 @@ h1 = [0.544 -0.252 0.593 0.236 -0.077 0.156 -0.5 0.025 -0.023 0.099].';
 h2 = [-0.204 0.274 0.023 0.024 0.022 -0.274 -0.321 -0.070 0.712 0.433].';
 
 ho = kron(h1,h2);
-% 
-% h1 = randn(M,1);
-% h2 = randn(M,1);
-% ho = kron(h1,h2);
 
 % L = 3;
 
@@ -40,32 +36,34 @@ for LIndex = 1:length(L)
     for index = 1:maxIt
         
         xFlip = zeros(M,L(LIndex)+1);
-        yAux = zeros(maxRuns + M + L(LIndex) - 1,L(LIndex)+1,K);
-        yAux2 = zeros(K,maxRuns + M + L(LIndex) - 1,L(LIndex)+1);
-        y = zeros(maxRuns + M + L(LIndex) - 1,L(LIndex)+1);
+        yAux = zeros(globalLength,L(LIndex)+1,K);
+        yAux2 = zeros(K,globalLength,L(LIndex)+1);
+        y = zeros(globalLength,L(LIndex)+1);
         Y = zeros(L(LIndex)+1,K);
         T = zeros(L(LIndex)+1,M*K);
         
         d = zeros(L(LIndex)+1,maxRuns);
         e = zeros(L(LIndex)+1,maxRuns);
         
-        xp = zeros(maxRuns + M + L(LIndex) - 1,1);
+        xp = zeros(globalLength,1);
         xp(M + L(LIndex),1) = 2;
-        delta = zeros(maxRuns + M + L(LIndex) - 1,1);
+        delta = zeros(globalLength,1);
         delta(M + L(LIndex),1) = 1e-3;
+        mu = zeros(globalLength,1);
+        
+        wC = zeros(M*K,maxRuns);
+        index
+        input = randn(globalLength,1);
+%         input = filter([1 0],[1 -0.9],input);
+        input = input.*sqrt(signalPower/var(input));
+
+        n = randn(globalLength,1);
+        n = n.*sqrt(noisePower/var(n));
         
         
         
 %         wC = randn(M*K,maxRuns);
-        wC = zeros(M*K,maxRuns + M + L(LIndex) - 1);
-%         wC = ones(M*K,maxRuns).*repmat(ho,1,maxRuns);
-        index
-        input = randn(maxRuns*2,1);
-        input = filter([1 0],[1 -0.9],input);
-        input = input.*sqrt(signalPower/var(input));
-
-        n = randn(maxRuns + M + L(LIndex) - 1,1);
-        n = n.*sqrt(noisePower/var(n));
+       
 
         for j = 1:K - 1
             w1 = zeros(M,1);
@@ -118,11 +116,7 @@ for LIndex = 1:length(L)
             
 
             e(:,k) = d(:,k) - y2.';
-            
-%             if abs(e(1,k))^2 > 10  && k >2000
-%                 abs(e(1,k))^2
-%             end
-%            traceMat(k) =  trace((Y*Y.') .* (xFlip.'*xFlip))
+           
             
             
             delta(k+1) = gamma*(xp(k)- 1) + epsilon;
@@ -130,13 +124,11 @@ for LIndex = 1:length(L)
             Q = delta(k+1)*eye(L(LIndex)+1) + (Y*Y.') .* (xFlip.'*xFlip);
             
             invQ = Q\eye(L(LIndex)+1);
-%             condQ(index,k,LIndex) = cond(Q);
 
             wC(:,k+1) = wC(:,k) + mu*T.'*invQ*e(:,k);
             
             xp(k+1) = 1/((L(LIndex)+1)^2) * trace(invQ) * trace(Q);
             
-%             b(k) = norm(wC(:,k+1));
 %             mis(k) =  norm(kron(wC(1:end/2,k+1),wC(end/2+1:end,k+1))- ho).^2/(norm(ho).^2);
 
         end
@@ -147,11 +139,6 @@ for LIndex = 1:length(L)
 %     w3 = mean(w2,3);
 %     w4(:,1) = w3(:,end);
     e3{LIndex} = mean(e2,2);
- end
+end
 
-% % hold on
-% % plot(10*log10((e3(:,2))))
-% xlabel('Iterations','interpreter','latex');
-% ylabel('MSE (dB)','interpreter','latex');
-% 
 save(['.' filesep 'results' filesep 'testSML2.mat'],'e3');
