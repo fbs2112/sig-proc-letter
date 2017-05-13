@@ -13,6 +13,8 @@ noisePower = 1e-3;
 gamma = 1e-2;
 epsilon = 1e-3;
 
+alpha = 0.05;
+
 K = 2;
 M = 10;
 
@@ -51,10 +53,17 @@ for LIndex = 1:length(L)
         delta = zeros(globalLength,1);
         delta(M + L(LIndex),1) = 1e-3;
         
+        
+        invQ = zeros(L(LIndex)+1,L(LIndex)+1,maxRuns);
+        
+        invQ(:,:,M + L(LIndex)) = 1e-6*eye(L(LIndex)+1);
+        
+        
+        
         wC = zeros(M*K,maxRuns);
         index
         input = randn(globalLength,1);
-%         input = filter([1 0],[1 -0.9],input);
+        input = filter([1 0],[1 -0.9],input);
         input = input.*sqrt(signalPower/var(input));
 
         n = randn(globalLength,1);
@@ -119,15 +128,21 @@ for LIndex = 1:length(L)
            
             
             
-            delta(k+1) = gamma*(xp(k)- 1) + epsilon;
+%             delta(k+1) = gamma*(xp(k)- 1) + epsilon;
             
-            Q = delta(k+1)*eye(L(LIndex)+1) + (Y*Y.') .* (xFlip.'*xFlip);
+            Q = (Y*Y.') .* (xFlip.'*xFlip);
             
-            invQ = Q\eye(L(LIndex)+1);
+%             auxMatrix = invQ(:,:,k)*Q;
+            
+            auxMatrix = Q*invQ(:,:,k);
+            
+%             invQ(:,:,k+1) = 1/(1-alpha) * (invQ(:,:,k) - auxMatrix*((1/(1-alpha)) * (auxMatrix + 1/alpha)\eye(L(LIndex)+1))*1/((1-alpha))*invQ(:,:,k));
+            
+            invQ(:,:,k+1) = 1/(1-alpha) * (invQ(:,:,k) - alpha*invQ(:,:,k)*(((alpha/(1-alpha)) *auxMatrix + eye(L(LIndex)+1))\eye(L(LIndex)+1))*1/((1-alpha))*auxMatrix);
 
-            wC(:,k+1) = wC(:,k) + mu*T.'*invQ*e(:,k);
+            wC(:,k+1) = wC(:,k) + mu*T.'*invQ(:,:,k+1)*e(:,k);
             
-            xp(k+1) = 1/((L(LIndex)+1)^2) * trace(invQ) * trace(Q);
+%             xp(k+1) = 1/((L(LIndex)+1)^2) * trace(invQ) * trace(Q);
             
 %             mis(k) =  norm(kron(wC(1:end/2,k+1),wC(end/2+1:end,k+1))- ho).^2/(norm(ho).^2);
 
@@ -141,4 +156,4 @@ for LIndex = 1:length(L)
     e3{LIndex} = mean(e2,2);
 end
 
-save(['.' filesep 'results' filesep 'testSML2.mat'],'e3');
+save(['.' filesep 'results' filesep 'testSML_Rec_Reg2.mat'],'e3');

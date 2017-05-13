@@ -1,5 +1,5 @@
 %This script evaluates the MSE for the case of Simple Multilinear
-%Functionals for a given SML model
+%Functionals for a given SML model using a set-membership framework.
 
 
 clear;
@@ -11,7 +11,9 @@ maxIt = 100;
 signalPower = 1;
 noisePower = 1e-3;
 gamma = 1e-2;
-epsilon = 1e-3;
+epsilon = 1e-2;
+
+barGamma = sqrt(5*noisePower);
 
 K = 2;
 M = 10;
@@ -23,17 +25,22 @@ h2 = [-0.204 0.274 0.023 0.024 0.022 -0.274 -0.321 -0.070 0.712 0.433].';
 
 ho = kron(h1,h2);
 
-% L = 3;
+%L = 0;
 
 
 L = 0:3;
-
 e3 = cell(length(L));
+meanCount = zeros(length(L),1);
+
 
 for LIndex = 1:length(L)
-    globalLength = maxRuns + M + L(LIndex) - 1;
-    e2 = zeros(globalLength,maxIt);
     
+    u = zeros(L(LIndex)+1,1);
+    u(1) = 1;
+    
+    globalLength = maxRuns + M + L(LIndex) - 1;
+    count = zeros(maxIt,1);
+    e2 = zeros(globalLength,maxIt);
     for index = 1:maxIt
         
         xFlip = zeros(M,L(LIndex)+1);
@@ -50,20 +57,16 @@ for LIndex = 1:length(L)
         xp(M + L(LIndex),1) = 2;
         delta = zeros(globalLength,1);
         delta(M + L(LIndex),1) = 1e-3;
+        mu = zeros(globalLength,1);
         
         wC = zeros(M*K,maxRuns);
         index
         input = randn(globalLength,1);
-%         input = filter([1 0],[1 -0.9],input);
+        input = filter([1 0],[1 -0.9],input);
         input = input.*sqrt(signalPower/var(input));
 
         n = randn(globalLength,1);
         n = n.*sqrt(noisePower/var(n));
-        
-        
-        
-%         wC = randn(M*K,maxRuns);
-       
 
         for j = 1:K - 1
             w1 = zeros(M,1);
@@ -110,35 +113,40 @@ for LIndex = 1:length(L)
             y2 = y(k,:);
 
             for l = L(LIndex):-1:0
-                d(l+1,k) = kron(xFlip(:,l+1),xFlip(:,l+1)).'*ho + n(k-(L(LIndex) - l));
+                d(l+1,k) = kron(xFlip(:,l+1),xFlip(:,l+1)).'*ho + n(k);
             end
-            
-            
 
             e(:,k) = d(:,k) - y2.';
-           
             
+            Q = gamma*eye(L(LIndex)+1) + (Y*Y.') .* (xFlip.'*xFlip);
+            absoluteValueError = abs(e(1,k));
             
-            delta(k+1) = gamma*(xp(k)- 1) + epsilon;
+            if absoluteValueError > barGamma
+                mu(k) = 1 - barGamma/absoluteValueError;
+                 
+%                 delta(k+1) = gamma*(xp(k)- 1) + epsilon;
+                
+                delta(k+1) = epsilon;
             
-            Q = delta(k+1)*eye(L(LIndex)+1) + (Y*Y.') .* (xFlip.'*xFlip);
-            
-            invQ = Q\eye(L(LIndex)+1);
+                Q = delta(k+1)*eye(L(LIndex)+1) + (Y*Y.') .* (xFlip.'*xFlip);
 
-            wC(:,k+1) = wC(:,k) + mu*T.'*invQ*e(:,k);
-            
-            xp(k+1) = 1/((L(LIndex)+1)^2) * trace(invQ) * trace(Q);
-            
-%             mis(k) =  norm(kron(wC(1:end/2,k+1),wC(end/2+1:end,k+1))- ho).^2/(norm(ho).^2);
+                invQ = Q\eye(L(LIndex)+1);
+                
+                wC(:,k+1) = wC(:,k) + mu(k)*T.'*invQ*e(1,k)*u;
+            else
+                wC(:,k+1) = wC(:,k);
+                count(index) = count(index)+1; 
+            end
 
         end
     %         w2(:,:,index) = conj(w(:,1:maxRuns));
         e2(:,index) = abs(e(1,:)).^2;
     end
 
+     meanCount(LIndex) = mean(count);
 %     w3 = mean(w2,3);
 %     w4(:,1) = w3(:,end);
-    e3{LIndex} = mean(e2,2);
+     e3{LIndex} = mean(e2,2);
 end
 
-save(['.' filesep 'results' filesep 'testSML2.mat'],'e3');
+save(['.' filesep 'results' filesep 'resultsSM_SML2.mat'],'e3','meanCount');

@@ -11,7 +11,7 @@ maxIt = 100;
 signalPower = 1;
 noisePower = 1e-3;
 gamma = 1e-2;
-epsilon = 1e-3;
+epsilon = 1e-6;
 
 K = 2;
 M = 10;
@@ -26,7 +26,7 @@ ho = kron(h1,h2);
 % L = 3;
 
 
-L = 0:3;
+L = 0;
 
 e3 = cell(length(L));
 
@@ -119,15 +119,17 @@ for LIndex = 1:length(L)
            
             
             
-            delta(k+1) = gamma*(xp(k)- 1) + epsilon;
+%             delta(k+1) = gamma*(xp(k)- 1) + epsilon;
             
-            Q = delta(k+1)*eye(L(LIndex)+1) + (Y*Y.') .* (xFlip.'*xFlip);
+            QAux(:,:,k) = (Y*Y.') .* (xFlip.'*xFlip);
             
-            invQ = Q\eye(L(LIndex)+1);
+            [LMatrix,DHat] = MattDavies(QAux(:,:,k));
+            
+            invQ = LMatrix'*(DHat\eye(L(LIndex)+1))*LMatrix + epsilon*eye(L(LIndex)+1);
 
             wC(:,k+1) = wC(:,k) + mu*T.'*invQ*e(:,k);
             
-            xp(k+1) = 1/((L(LIndex)+1)^2) * trace(invQ) * trace(Q);
+%             xp(k+1) = 1/((L(LIndex)+1)^2) * trace(invQ) * trace(Q);
             
 %             mis(k) =  norm(kron(wC(1:end/2,k+1),wC(end/2+1:end,k+1))- ho).^2/(norm(ho).^2);
 
@@ -141,4 +143,4 @@ for LIndex = 1:length(L)
     e3{LIndex} = mean(e2,2);
 end
 
-save(['.' filesep 'results' filesep 'testSML2.mat'],'e3');
+save(['.' filesep 'results' filesep 'testSML_MD.mat'],'e3');
