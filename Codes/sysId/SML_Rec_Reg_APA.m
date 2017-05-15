@@ -6,33 +6,22 @@ clear;
 clc;
 close all;
 
-maxRuns = 5000;
-maxIt = 100;
-signalPower = 1;
-noisePower = 1e-3;
+addpath(['.' filesep 'simParameters' filesep]);
 
-alpha = 0.05;
+load param01.mat;
+inputType = 'white';
 
-K = 2;
-M = 10;
-
-mu = 0.05;
-
-h1 = [0.544 -0.252 0.593 0.236 -0.077 0.156 -0.5 0.025 -0.023 0.099].';
-h2 = [-0.204 0.274 0.023 0.024 0.022 -0.274 -0.321 -0.070 0.712 0.433].';
-
-ho = kron(h1,h2);
-
-% L = 3;
-
-
-L = 0:3;
+L = 0:0;
 
 e3 = cell(length(L));
+misalignment = cell(length(L));
 
 for LIndex = 1:length(L)
     globalLength = maxRuns + M + L(LIndex) - 1;
     e2 = zeros(globalLength,maxIt);
+    wIndex = zeros(M^2,globalLength,maxIt);
+    
+    misalignmentAux = zeros(globalLength,maxIt);
     
     for index = 1:maxIt
         
@@ -56,21 +45,21 @@ for LIndex = 1:length(L)
         
         invQ(:,:,M + L(LIndex)) = 1e-6*eye(L(LIndex)+1);
         
-        
+        w = zeros(M^2,globalLength);
         
         wC = zeros(M*K,maxRuns);
         index
         input = randn(globalLength,1);
-        input = filter([1 0],[1 -0.9],input);
+        
+        if strcmp(inputType,'colored')
+           input = filter([1 0],[1 -0.9],input);
+        end
+        
         input = input.*sqrt(signalPower/var(input));
 
         n = randn(globalLength,1);
         n = n.*sqrt(noisePower/var(n));
-        
-        
-        
-%         wC = randn(M*K,maxRuns);
-       
+               
 
         for j = 1:K - 1
             w1 = zeros(M,1);
@@ -84,14 +73,14 @@ for LIndex = 1:length(L)
 
         for k = M + L(LIndex):globalLength
 
-            w = reshape(wC(:,k),[],K);
+            wAux = reshape(wC(:,k),[],K);
 
             for l = 0:L(LIndex)
                 xFlip(:,l+1) = input(k-l:-1:k-M+1-l);
 
                 for s = 1:K
 
-                    yAux(k,l+1,s) = xFlip(:,l+1).'*w(:,s);
+                    yAux(k,l+1,s) = xFlip(:,l+1).'*wAux(:,s);
 
                 end
             end
@@ -124,13 +113,9 @@ for LIndex = 1:length(L)
 
             e(:,k) = d(:,k) - y2.';
            
-            
-            
-%             delta(k+1) = gamma*(xp(k)- 1) + epsilon;
-            
+                        
             Q = (Y*Y.') .* (xFlip.'*xFlip);
             
-%             auxMatrix = invQ(:,:,k)*Q;
             
             auxMatrix = Q*invQ(:,:,k);
             
@@ -139,19 +124,18 @@ for LIndex = 1:length(L)
             invQ(:,:,k+1) = 1/(1-alpha) * (invQ(:,:,k) - alpha*invQ(:,:,k)*(((alpha/(1-alpha)) *auxMatrix + eye(L(LIndex)+1))\eye(L(LIndex)+1))*1/((1-alpha))*auxMatrix);
 
             wC(:,k+1) = wC(:,k) + mu*T.'*invQ(:,:,k+1)*e(:,k);
-            
-%             xp(k+1) = 1/((L(LIndex)+1)^2) * trace(invQ) * trace(Q);
-            
-%             mis(k) =  norm(kron(wC(1:end/2,k+1),wC(end/2+1:end,k+1))- ho).^2/(norm(ho).^2);
+
+            w(:,k+1) = kron(wC(1:end/2,k+1),wC(end/2+1:end,k+1));
+            misalignmentAux(k,index) =  norm(w(:,k+1)- ho).^2/(norm(ho).^2);
 
         end
-    %         w2(:,:,index) = conj(w(:,1:maxRuns));
+        wIndex(:,:,index) = conj(w(:,1:globalLength));
         e2(:,index) = abs(e(1,:)).^2;
     end
+    misalignment{LIndex} = mean(misalignmentAux,2);
+    w3 = mean(wIndex,3);
 
-%     w3 = mean(w2,3);
-%     w4(:,1) = w3(:,end);
     e3{LIndex} = mean(e2,2);
 end
 
-save(['.' filesep 'results' filesep 'testSML_Rec_Reg2.mat'],'e3');
+save(['.' filesep 'results' filesep 'testSML_Rec_Reg2.mat'],'e3','w3','misalignment');
