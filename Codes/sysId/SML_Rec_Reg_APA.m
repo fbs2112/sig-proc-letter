@@ -10,8 +10,6 @@ maxRuns = 5000;
 maxIt = 100;
 signalPower = 1;
 noisePower = 1e-3;
-gamma = 1e-2;
-epsilon = 1e-3;
 
 alpha = 0.05;
 
