@@ -8,7 +8,7 @@ close all;
 
 addpath(['.' filesep 'simParameters' filesep]);
 
-load param01.mat; %.mat file containing simulation parameters
+load param01.mat;
 inputType = 'white';
 
 L = 0:0;
@@ -22,6 +22,7 @@ for LIndex = 1:length(L)
     wIndex = zeros(M^2,globalLength,maxIt);
     
     misalignmentAux = zeros(globalLength,maxIt);
+    count = zeros(maxIt,1);
     
     for index = 1:maxIt
         
@@ -48,6 +49,9 @@ for LIndex = 1:length(L)
         w = zeros(M^2,globalLength);
         
         wC = zeros(M*K,globalLength);
+        
+        mu = zeros(globalLength,1);
+        
         index
         input = randn(globalLength,1);
         
@@ -112,30 +116,41 @@ for LIndex = 1:length(L)
             
 
             e(:,k) = d(:,k) - y2.';
-           
-                        
+            
+            absoluteValueError = abs(e(1,k));
+            
             Q = (Y*Y.') .* (xFlip.'*xFlip);
-            
-            
-            auxMatrix = Q*invQ(:,:,k);
-            
-%             invQ(:,:,k+1) = 1/(1-alpha) * (invQ(:,:,k) - auxMatrix*((1/(1-alpha)) * (auxMatrix + 1/alpha)\eye(L(LIndex)+1))*1/((1-alpha))*invQ(:,:,k));
-            
-            invQ(:,:,k+1) = 1/(1-alpha) * (invQ(:,:,k) - alpha*invQ(:,:,k)*(((alpha/(1-alpha)) *auxMatrix + eye(L(LIndex)+1))\eye(L(LIndex)+1))*1/((1-alpha))*auxMatrix);
 
-            wC(:,k+1) = wC(:,k) + mu*T.'*invQ(:,:,k+1)*e(:,k);
+                auxMatrix = Q*invQ(:,:,k);
 
-            w(:,k+1) = kron(wC(1:end/2,k+1),wC(end/2+1:end,k+1));
-            misalignmentAux(k,index) =  norm(w(:,k+1)- ho).^2/(norm(ho).^2);
+                invQ(:,:,k+1) = 1/(1-alpha) * (invQ(:,:,k) - alpha*invQ(:,:,k)*(((alpha/(1-alpha)) *auxMatrix + eye(L(LIndex)+1))\eye(L(LIndex)+1))*1/((1-alpha))*auxMatrix);
+            
+            if absoluteValueError > barGamma
+           
+                mu(k) = 1 - barGamma/absoluteValueError;
+                
 
+                wC(:,k+1) = wC(:,k) + mu(k)*T.'*invQ(:,:,k+1)*e(:,k);
+
+                w(:,k+1) = kron(wC(1:end/2,k+1),wC(end/2+1:end,k+1));
+                misalignmentAux(k,index) =  norm(w(:,k+1)- ho).^2/(norm(ho).^2);
+                count(index) = count(index)+1; 
+            else
+                invQ(:,:,k+1) = invQ(:,:,k);
+                wC(:,k+1) = wC(:,k);
+                w(:,k+1) =  w(:,k);
+                misalignmentAux(k,index) = misalignmentAux(k-1,index);
+            end
+            
         end
         wIndex(:,:,index) = conj(w(:,1:globalLength));
         e2(:,index) = abs(e(1,:)).^2;
     end
     misalignment{LIndex} = mean(misalignmentAux,2);
     w3 = mean(wIndex,3);
+    meanCount = mean(count);
 
     e3{LIndex} = mean(e2,2);
 end
 
-save(['.' filesep 'results' filesep 'testSML_Rec_Reg2.mat'],'e3','w3','misalignment');
+save(['.' filesep 'results' filesep 'testSML_Rec_Reg2.mat'],'e3','w3','misalignment','meanCount');
