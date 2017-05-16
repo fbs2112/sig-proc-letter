@@ -7,7 +7,7 @@ close all;
 
 addpath(['.' filesep 'simParameters' filesep]);
 
-load param01.mat;
+load param02.mat;
 inputType = 'white';
 
 L = 0;%PAPA NLMS
