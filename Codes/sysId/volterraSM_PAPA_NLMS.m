@@ -21,7 +21,7 @@ meanCount = cell(length(L));
 for LIndex = 1:length(L)
     
     globalLength = maxRuns + N + L(LIndex) - 1;
-    count = zeros(maxIt,1);
+    count = zeros(globalLength,maxIt);
 
     u = zeros(L(LIndex)+1,1);
     u(1) = 1;
