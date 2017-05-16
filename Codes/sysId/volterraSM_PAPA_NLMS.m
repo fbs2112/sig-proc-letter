@@ -1,5 +1,4 @@
-%%
-%Teste Volterra SM-NLMS
+%Volterra SM-PAPA NLMS
 
 clear;
 clc;
@@ -9,7 +8,7 @@ close all;
 addpath(['.' filesep 'simParameters' filesep]);
 
 load param01.mat;
-inputType = 'colored';
+inputType = 'white';
 
 L = 0;%PAPA NLMS
 
@@ -21,7 +20,7 @@ meanCount = cell(length(L));
 
 for LIndex = 1:length(L)
     
-    globalLength = maxRuns + M + L(LIndex) - 1;
+    globalLength = maxRuns + N + L(LIndex) - 1;
     count = zeros(maxIt,1);
 
     u = zeros(L(LIndex)+1,1);
