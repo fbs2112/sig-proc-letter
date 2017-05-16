@@ -1,0 +1,116 @@
+%Teste Volterra SM-NLMS
+
+clear;
+clc;
+close all;
+
+addpath(['.' filesep 'simParameters' filesep]);
+
+load param01.mat;
+inputType = 'white';
+
+
+count = zeros(maxIt,1);
+
+
+for j = 1:maxIt
+    P(:,:,1) = eye(adapFiltLength)*1e-6;
+    sigma(1) = 1;
+    j
+   
+    input = randn(maxRuns*2,1);
+%     input = filter([1 0],[1 -0.9],input);
+    input = input.*sqrt(signalPower/var(input));
+
+    n = randn(maxRuns*2,1);
+    n = n.*sqrt(noisePower/var(n));
+
+
+    theta = zeros((N^2+N)/2 + N,maxRuns);
+    aux = 1;
+    
+    
+     xFlip = flipud(buffer(input,N,N-1));
+        
+        
+    
+
+    xFlipConc = [xFlip;xTDLAux];
+    
+    
+    
+
+    for k = 1:maxRuns
+        for m = 1:size(xFlip,2)
+        
+            xTDLAux = zeros(adapFiltLength - N,1);
+
+            for lIndex = 1:length(l1)
+                xTDLAux(lIndex,m) = xFlip(l1(lIndex),m)*xFlip(l2(lIndex),1);
+            end
+
+        end
+
+%         counterAux = 1;
+%         xTDLAux = zeros((N*N+N)/2,1);
+% 
+%         for lIndex = 1:length(l1)
+%             xTDLAux(lIndex,1) = xTDL(l1(lIndex),k)*xTDL(l2(lIndex),k);
+%         end
+% 
+%         xTDLConc = [xTDL(:,k);xTDLAux];
+        xTDLConc = xFlipConc(:,k);
+        d(k) = ((wo(:,aux)'*xTDLConc)) + n(k);
+
+        delta(k) = d(k) - theta(:,k)'*xTDLConc; %error
+        G(k) = xTDLConc.'*P(:,:,k)*conj(xTDLConc);
+        
+        if abs(delta(k)) <= barGamma
+            lambda(k) = 0;
+            count(j) = count(j) + 1;
+        else
+            lambda(k) = (1/G(k))*((abs(delta(k))/barGamma) - 1);
+        end
+        
+        
+        P(:,:,k+1) = P(:,:,k) - (lambda(k)*P(:,:,k)*conj(xTDLConc)*xTDLConc.'*P(:,:,k))/(1+lambda(k)*G(k));
+        
+        theta(:,k+1) = theta(:,k) + lambda(k)*P(:,:,k+1)*conj(xTDLConc)*delta(k);
+        
+        sigma(k+1) = sigma(k) - (lambda(k)*delta(k)^2)/(1+lambda(k)*G(k)) + lambda(k)*delta(k)^2;
+        
+        misalignmentAux(k,j) = norm(theta(:,k+1) - wo(:,aux)).^2/(norm(wo(:,aux)).^2);
+        
+%         if ~mod(k,600)
+%             aux = aux + 1;
+%         end
+        
+%         if ~mod(k,N)
+%             nW = randn(N,1);
+%             nW = nW.*sqrt(varW/var(nW));
+%             wo(1:N,k+1) = lambdaW*wo(1:N,k) + nW;
+%         else
+%             wo(:,k+1) = wo(:,k);
+%         end
+    end
+    w2(:,:,j) = conj(theta(:,1:maxRuns));
+    e2(:,j) = abs(delta).^2;
+end
+
+meanCount = mean(count);
+
+w3 = mean(w2,3);
+wFinal = w3(:,end);
+
+e3 = mean(e2,2);
+
+misalignment = mean(misalignmentAux,2);
+
+% figure;
+% plot(10*log10((e3)))
+% xlabel('Itera\c{c}\~oes','interpreter','latex');
+% ylabel('MSE (dB)','interpreter','latex');
+
+save(['.' filesep 'results' filesep 'resultsSM_0BE_Test.mat'],'misalignment','e3','meanCount','w3');
+
+

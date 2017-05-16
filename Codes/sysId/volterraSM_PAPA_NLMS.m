@@ -12,11 +12,9 @@ inputType = 'white';
 
 L = 0;%PAPA NLMS
 
-
 e3 = cell(length(L));
 misalignment = cell(length(L));
 meanCount = cell(length(L));
-
 
 for LIndex = 1:length(L)
     
@@ -52,7 +50,6 @@ for LIndex = 1:length(L)
 
         xFlip = flipud(buffer(input,N,N-1));
         
-        
         for m = 1:size(xFlip,2)
             for l3 = 1:L(LIndex)+1
                 xTDLAux = zeros(adapFiltLength - N,size(xFlip,2));
@@ -68,6 +65,18 @@ for LIndex = 1:length(L)
         xFlipConc = [xFlip;xTDLAux];
         
         for k = N + L(LIndex):globalLength
+            
+            
+            for l3 = 1:L(LIndex)+1
+                xTDLAux = zeros(adapFiltLength - N,size(xFlip,2));
+
+                for lIndex = 1:length(l1)
+                    xTDLAux(lIndex,m) = xFlip(l1(lIndex),m+l3-1-L(LIndex))*xFlip(l2(lIndex),m+l3-1-L(LIndex));
+                end
+
+            end
+
+            
 
             xAP = xFlipConc(:,k:-1:k-L(LIndex));
            
