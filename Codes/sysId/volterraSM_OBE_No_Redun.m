@@ -9,8 +9,9 @@ addpath(['.' filesep 'simParameters' filesep]);
 load param01.mat;
 inputType = 'white';
 
-count = zeros(maxIt,1);
+
 globalLength = maxRuns + N - 1;
+count = zeros(globalLength,maxIt);
 
 misalignmentAux = zeros(globalLength,maxIt);
 wIndex = zeros(adapFiltLength,globalLength,maxIt);

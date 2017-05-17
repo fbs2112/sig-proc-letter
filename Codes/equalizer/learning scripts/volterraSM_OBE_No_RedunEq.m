@@ -8,119 +8,107 @@ close all;
 addpath(['..' filesep 'simParameters' filesep]);
 
 
-load param.mat;
+load paramEq.mat;
 
 
-delayVector = 3;%adapFiltLength + 10;
+numberOfSymbols = 2^numberOfBits;
+
+delayVector = 1:N+length(h);%adapFiltLength + 10;
+
+e3 = cell(length(delayVector),1);
+w3 = cell(length(delayVector),1);
 
 
 for delay = 1:length(delayVector)
     delay
+    globalLength = maxRuns + adapFiltLength + delayVector(delay) - 1;
 
-    count = zeros(maxIt,1);
+    wIndex = zeros(adapFiltLength,globalLength,maxIt);
+    e2 = zeros(globalLength,maxIt);
 
-    w2 = zeros(adapFiltLength,maxRuns,maxIt);
-    for j = 1:maxIt
-        j
+    count = zeros(globalLength,maxIt);
+
+    w2 = zeros(adapFiltLength,globalLength,maxIt);
+    for index = 1:maxIt
+        index
         
-        P = zeros(adapFiltLength,adapFiltLength,maxRuns*2);
-        sigma = zeros(maxRuns*2,1);
-        delta = zeros(maxRuns,1);
-        G = zeros(maxRuns*2,1);
-        lambda = zeros(maxRuns*2,1);
+        d = zeros(globalLength,1);
+        P = zeros(adapFiltLength,adapFiltLength,maxIt);
+        P(:,:,adapFiltLength + delayVector(delay)) = eye(adapFiltLength)*1e-6;
+        sigma = zeros(globalLength,1);
+        sigma(adapFiltLength + delayVector(delay)) = 1;
+        delta = zeros(globalLength,1);
+        lambda = zeros(globalLength,1);
+        G = zeros(globalLength,1);
+        
 
-        P(:,:,adapFiltLength + delayVector(delay) + 10) = eye(adapFiltLength)*1e-6;
-        sigma(adapFiltLength + delayVector(delay) + 10) = 1;
-
-
-        input = randi([0,3],maxRuns*2,1);
-        pilot = qammod(input,4);
-
+        input = randi([0,numberOfSymbols-1],globalLength,1);
+        
+        pilot = qammod(input,numberOfSymbols,0,'gray');
+        
         pilot = pilot.*sqrt(signalPower/var(pilot));
 
         xAux2 = filter(h,1,pilot);
-        xAux2 = xAux2 + 0.2*(xAux2.^2) + 0.05*(xAux2.^3);
+        xAux2 = xAux2 + 0.2*(xAux2.^2);
    
-        n = randn(maxRuns*2,1) + randn(maxRuns*2,1)*1i;
-        powerSignal = xAux2'*xAux2./(maxRuns*2);
-        powerNoiseAux = n'*n/(maxRuns*2);
-        powerNoise = (powerSignal/SNRAux);
+        n = randn(globalLength,1) + randn(globalLength,1)*1i;
+        powerSignal = xAux2'*xAux2./(globalLength);
+        powerNoiseAux = n'*n/(globalLength);
+        powerNoise = (powerSignal/SNR);
         n = n.*sqrt(powerNoise/powerNoiseAux);
 
         xAux = xAux2 + n;
+        
+        xFlip = flipud(buffer(xAux,N,N-1));
 
+        theta = zeros(adapFiltLength,globalLength);
 
-        xTDL = flipud(buffer(input,N,N-1,'nodelay'));
+        for k = (adapFiltLength + delayVector(delay)):globalLength
 
-        theta = zeros((N^2+N)/2 + N,maxRuns);
-
-    %             w = zeros(N,maxRuns);
-
-
-        for k = (adapFiltLength + delayVector(delay) + 10):maxRuns
-            xAP = xAux(k:-1:k-N+1);
-
-            xTDLAux = zeros((N*N+N)/2,1);
+            xTDLAux = zeros(adapFiltLength - N,1);
 
             for lIndex = 1:length(l1)
-                xTDLAux(lIndex,1) = xAP(l1(lIndex))*(xAP(l2(lIndex)));
+                xTDLAux(lIndex,1) = xFlip(l1(lIndex),k)*(xFlip(l2(lIndex),k));
             end
 
-            xTDLConc = [xAP;xTDLAux];
-
+            xAP = [xFlip(:,k);xTDLAux];
+        
             d(k) = (pilot(-delayVector(delay) + k + 1)); 
-    %             d(k) = (pilot(-L2 + adapFiltLength+1 - L)); 
 
-            delta(k) = d(k) - theta(:,k).'*xTDLConc(:,1);
-            G(k) = xTDLConc.'*P(:,:,k)*conj(xTDLConc);
-    %                if abs(delta(k)) <= gamma
-            if abs(delta(k)) <= gamma
+            delta(k) = d(k) - theta(:,k).'*xAP(:,1);
+            G(k) = xAP.'*P(:,:,k)*conj(xAP);
+            
+            if abs(delta(k)) > barGamma
+                lambda(k) = (1/G(k))*((abs(delta(k))/barGamma) - 1);
 
-                lambda(k) = 0;
-                count(j) = count(j) + 1;
-                P(:,:,k+1) = P(:,:,k);
-                theta(:,k+1) = theta(:,k);
-                sigma(k+1) = sigma(k); 
+                P(:,:,k+1) = P(:,:,k) - (lambda(k)*P(:,:,k)*conj(xAP)*xAP.'*P(:,:,k))/(1+lambda(k)*G(k));
 
-            else
-                lambda(k) = (1/G(k))*((abs(delta(k))/gamma) - 1);
-                 P(:,:,k+1) = (P(:,:,k)) - (lambda(k)*(P(:,:,k))*conj(xTDLConc)*xTDLConc.'*(P(:,:,k)))/(1+lambda(k)*G(k));
-
-                theta(:,k+1) = theta(:,k) + lambda(k)*P(:,:,k+1)*conj(xTDLConc)*delta(k);
+                theta(:,k+1) = theta(:,k) + lambda(k)*P(:,:,k+1)*conj(xAP)*delta(k);
 
                 sigma(k+1) = sigma(k) - (lambda(k)*delta(k)^2)/(1+lambda(k)*G(k)) + lambda(k)*delta(k)^2;
 
+                count(k,index) = 1;
+            else
+                lambda(k) = 0;
+                P(:,:,k+1) = P(:,:,k);
+                theta(:,k+1) = theta(:,k);
+                sigma(k+1) = sigma(k);
             end
 
-
-
        end
-       w2(:,:,j) = (theta(:,1:maxRuns));
-       e2(:,j) = abs(delta).^2;
+       wIndex(:,:,index) = (theta(:,1:globalLength));
+       e2(:,index) = abs(delta).^2;
     end
 
     meanCount = mean(count);
 
-    w3 = mean(w2,3);
+    w3{delay} = mean(wIndex,3);
 
-    wFinal(delay,:,1) = w3(:,end);
-
-    e3(delay,:,1) = mean(e2,2);
-
-
-    % save(['.' filesep 'results' filesep 'results07.mat'],'wFinal','e3','meanCount');
-
-
-    %     for i = 1:L+1
-    %         plot(10*log10((e3(:,i))))
-    %         xlabel('Iterations','interpreter','latex');
-    %         ylabel('MSE (dB)','interpreter','latex');
-    %         hold on;
-%     end
-
+    e3{delay} = mean(e2,2);
 end
 
-save(['.' filesep 'resultsMSE' filesep 'results24.mat'],'e3','wFinal','meanCount');
+save(['.' filesep 'results' filesep 'testOaddpath(['..' filesep 'simParameters' filesep]);BE_Eq.mat'],'e3','w3','meanCount');
 
+rmpath(['..' filesep 'simParameters' filesep]);
 
 

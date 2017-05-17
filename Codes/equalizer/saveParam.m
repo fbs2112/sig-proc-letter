@@ -33,10 +33,10 @@ adapFiltLength = (N^2+N)/2 + N;
 kappa = 0.5;
 gamma = 1e-12;
 
-wo(:,1) = zeros(adapFiltLength,1);
-wo([1 4],1) = 1;
+barGamma = 4*sqrt(5*noisePower); %threshold for set-membership purposes
 
-barGamma = sqrt(5*noisePower); %threshold for set-membership purposes
 
+numberOfBits = 2;
+SNR = 30;
 
 save(['.' filesep 'simParameters' filesep 'paramEq.mat']);
