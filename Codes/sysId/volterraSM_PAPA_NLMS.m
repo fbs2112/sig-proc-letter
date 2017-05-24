@@ -36,7 +36,7 @@ for LIndex = 1:length(L)
         G = zeros(adapFiltLength,adapFiltLength,globalLength);
         
         input = randn(globalLength,1);
-        
+                
         if strcmp(inputType,'colored')
            input = filter([1 0],[1 -0.9],input);
         end

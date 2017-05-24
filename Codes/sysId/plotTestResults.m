@@ -116,6 +116,8 @@ xlim([0 5000])
 load resultsPAPATest.mat;
 figure
 
+M = 2;
+
 for l = 1:size(e3,2)
     plot(10*log10((e3{l}(M+l-1:end))))
     hold on;
