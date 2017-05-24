@@ -118,6 +118,50 @@ for delay = 1:size(e3,1)
     
 end
 
+close all
+
+
+load testSM_PAPA_DFE_LinEq.mat;
+
+for delay = 1:size(e3,1)
+    figure
+    for l = 1:size(e3,2)
+        plot(10*log10((e3{delay}(M:end))))
+        hold on;
+    end
+
+    xlabel('Iterations','interpreter','latex');
+    ylabel('MSE (dB)','interpreter','latex');
+
+    H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
+    set(H,'interpreter','latex')
+    xlim([0 500])
+    
+end
+
+
+close all;
+
+load testSM_PAPA_DFE_Volterra.mat;
+
+for delay = 1:size(e3,1)
+    figure
+    for l = 1:size(e3,2)
+        plot(10*log10((e3{delay}(M:end))))
+        hold on;
+    end
+
+    xlabel('Iterations','interpreter','latex');
+    ylabel('MSE (dB)','interpreter','latex');
+
+    H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
+    set(H,'interpreter','latex')
+    xlim([0 500])
+    
+end
+
+
+
 
 
 

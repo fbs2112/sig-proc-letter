@@ -37,6 +37,8 @@ barGamma = 4*sqrt(5*noisePower); %threshold for set-membership purposes
 
 
 numberOfBits = 2;
-SNR = 30;
+
+
+SNR = db2pow(30);
 
 save(['.' filesep 'simParameters' filesep 'paramEq.mat']);

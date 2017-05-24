@@ -36,8 +36,9 @@ for delay = 1:length(delayVector)
         x = zeros(feedforwardLength,1);
         yHat = zeros(feedbackLength,1);
 
-        input = randi([0,3],globalLength,1);
-        pilot = qammod(input,4);
+        input = randi([0,numberOfSymbols-1],globalLength,1);
+
+        pilot = qammod(input,numberOfSymbols,0,'gray');
 
         pilot = pilot.*sqrt(signalPower/var(pilot));
 
