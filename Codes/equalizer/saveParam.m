@@ -4,7 +4,7 @@ close all;
 
 
 maxRuns = 5000; % max runs in a single independent trial
-maxIt = 100;    %number of independent trial
+maxIt = 20;    %number of independent trial
 signalPower = 1;    %desired input signal power
 noisePower = 1e-3;  %desired measurement noise power
 
@@ -13,6 +13,9 @@ alpha = 0.01;      %forgetting factor of the correlation matrix in SML case
 K = 2;             %number of products in the SML case
 M = 10;            %length of the adaptiv filter in SML case
 mu = 0.1;         %step size
+
+% h(:,1) = [1 -2.5 1 0 2 0 0 0.7 0].';
+% h(:,2) = [0.5 3 0 0.5 0.001 0.3 0 0 0].';
 
 h = [1 0.2 -0.3];
 
@@ -35,8 +38,11 @@ gamma = 1e-12;
 
 barGamma = 4*sqrt(5*noisePower); %threshold for set-membership purposes
 
-
 numberOfBits = 2;
+
+pamOrder = 2^numberOfBits;
+
+changingIteration = 1000;
 
 
 SNR = db2pow(30);

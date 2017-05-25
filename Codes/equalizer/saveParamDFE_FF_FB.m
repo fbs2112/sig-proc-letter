@@ -64,6 +64,9 @@ barGamma = 4*sqrt(5*noisePower); %threshold for set-membership purposes
 
 
 numberOfBits = 2;
+
+pamOrder = 2^numberOfBits;
+
 SNR = db2pow(30);
 
 save(['.' filesep 'simParameters' filesep 'paramDFE_FF_FB.mat']);

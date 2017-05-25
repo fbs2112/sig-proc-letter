@@ -76,8 +76,8 @@ for SNRIndex = 1:length(SNR)
         [~,idx] = max(abs(corr));
         delay = abs(lags(idx));
 
-        decDemodSignal = qamdemod(equalyzedSignal,2^numberOfBits,0,'gray');
-
+        decDemodSignal = pamdemod(equalyzedSignal,pamOrder,0,'gray');
+        
         binaryOutputData = de2bi(decDemodSignal,numberOfBits);
 
         berAux(index) = sum(sum(abs(binaryOutputData(delay+1:(blockLength/2) + delay,:) - binaryInputData(1:(blockLength/2),:))))./blockLength;

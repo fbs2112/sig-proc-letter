@@ -44,7 +44,7 @@ for delay = 1:length(delayVector)
 
         input = randi([0,numberOfSymbols-1],globalLength,1);
         
-        pilot = qammod(input,numberOfSymbols,0,'gray');
+        pilot = pammod(input,pamOrder,0,'gray');
         
         pilot = pilot.*sqrt(signalPower/var(pilot));
 
@@ -107,7 +107,7 @@ for delay = 1:length(delayVector)
     e3{delay} = mean(e2,2);
 end
 
-save(['.' filesep 'results' filesep 'testOBE_Eq.mat'],'e3','w3','meanCount');
+save(['.' filesep 'results' filesep 'testSMOBE_Volterra.mat'],'e3','w3','meanCount');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 

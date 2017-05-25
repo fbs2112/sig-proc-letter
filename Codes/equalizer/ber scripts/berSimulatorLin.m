@@ -43,7 +43,7 @@ for SNRIndex = 1:length(SNR)
         binaryInputData = randi([0,1],blockLength + 100,1);
         binaryInputData = reshape(binaryInputData,[],numberOfBits);
         deciInputData = bi2de(binaryInputData);    
-        pilot = qammod(deciInputData,2^numberOfBits,0,'gray');
+        pilot = pammod(input,pamOrder,0,'gray');
         lengthAux = length(pilot);
         
         xAux2 = filter(h,1,pilot);
@@ -69,7 +69,7 @@ for SNRIndex = 1:length(SNR)
         [~,idx] = max(abs(corr));
         delay = abs(lags(idx));
 
-        decDemodSignal = qamdemod(equalyzedSignal,2^numberOfBits,0,'gray');
+        decDemodSignal = pamdemod(equalyzedSignal,pamOrder,0,'gray');
 
         binaryOutputData = de2bi(decDemodSignal,numberOfBits);
 

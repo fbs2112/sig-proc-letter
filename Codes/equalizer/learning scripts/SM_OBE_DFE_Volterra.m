@@ -42,8 +42,8 @@ for delay = 1:length(delayVector)
         yHat = zeros(feedbackLength,1);
 
         input = randi([0,numberOfSymbols-1],globalLength,1);
-        pilot = qammod(input,numberOfSymbols,0,'gray');
-
+        pilot = pammod(input,pamOrder,0,'gray');
+        
         pilot = pilot.*sqrt(signalPower/var(pilot));
 
         xAux2 = filter(h,1,pilot);
@@ -134,6 +134,6 @@ for delay = 1:length(delayVector)
 
 end    
 
-save(['.' filesep 'results' filesep 'testOBE_DFE_FF_FB.mat'],'w3','e3','meanCount');
+save(['.' filesep 'results' filesep 'testSMOBE_DFE_FF_FB.mat'],'w3','e3','meanCount');
 
 rmpath(['..' filesep 'simParameters' filesep]);

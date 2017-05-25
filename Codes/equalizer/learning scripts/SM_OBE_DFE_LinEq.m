@@ -12,7 +12,7 @@ numberOfSymbols = 2^numberOfBits;
 
 % delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
 
-delayVector = 1:1;%adapFiltLength + 10;
+delayVector = 1:adapFiltLength + length(h);
 
 
 e3 = cell(length(delayVector),1);
@@ -43,7 +43,7 @@ for delay = 1:length(delayVector)
         yHat = zeros(feedbackLength,1);
 
         input = randi([0,numberOfSymbols-1],globalLength,1);
-        pilot = qammod(input,numberOfSymbols,0,'gray');
+        pilot = pammod(input,pamOrder,0,'gray');
 
         pilot = pilot.*sqrt(signalPower/var(pilot));
 
@@ -110,6 +110,6 @@ for delay = 1:length(delayVector)
 
 end    
 
-save(['.' filesep 'results' filesep 'testOBE_DFE.mat'],'w3','e3','meanCount');
+save(['.' filesep 'results' filesep 'testSM_OBE_DFE.mat'],'w3','e3','meanCount');
 
 rmpath(['..' filesep 'simParameters' filesep]);

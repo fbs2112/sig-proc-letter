@@ -3,7 +3,7 @@ clc;
 close all;
 
 
-maxRuns = 5000; % max runs in a single independent trial
+maxRuns = 3000; % max runs in a single independent trial
 maxIt = 100;    %number of independent trial
 signalPower = 1;    %desired input signal power
 noisePower = 1e-3;  %desired measurement noise power
@@ -23,7 +23,7 @@ ho = kron(h1,h2); %unknown system in SML case
 %-------------------------------------------------------------------------%
 %Volterra set-membership
 
-N = 2;
+N = 3;
 
 auxMatrix = triu(ones(N));
 [l1,l2] = find(auxMatrix);
@@ -31,10 +31,14 @@ adapFiltLength = (N^2+N)/2 + N;
 kappa = 0.5;
 gamma = 1e-12;
 
-% wo(:,1) = zeros(adapFiltLength,1);
-% wo([1 4],1) = 1;
+wo(:,1) = [1 -2.5 1 0 2 0 0 0.7 0].';
+wo(:,2) = [0.5 3 0 0.5 0.001 0.3 0 0 0].';
+% wo(:,2) = [1 -2.5 0 0.01 0.007 0.2 0 0 0].';
 
-wo = [1 -2.5 0.01 0.007 0.2].';
+
+pamOrder = 4;
+
+changingIteration = 1000;
 
 barGamma = sqrt(5*noisePower); %threshold for set-membership purposes
 
