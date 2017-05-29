@@ -19,7 +19,7 @@ w3 = cell(length(delayVector),1);
 
 for delay = 1:length(delayVector)
     
-    globalLength = maxRuns + adapFiltLength + delayVector(delay) - 1;
+    globalLength = maxRuns + adapFiltLength + delayVector(delay) - 1 + length(h(:,1));
 
     wIndex = zeros(adapFiltLength,globalLength,maxIt);
     e2 = zeros(globalLength,maxIt);
@@ -31,6 +31,7 @@ for delay = 1:length(delayVector)
         e = zeros(globalLength,1);
         G = zeros(adapFiltLength,adapFiltLength,globalLength);
 
+        xFiltered = zeros(globalLength,1);
         x = zeros(feedforwardLength,1);
         yHat = zeros(feedbackLength,1);
 
@@ -40,9 +41,7 @@ for delay = 1:length(delayVector)
 
         pilot = pilot.*sqrt(signalPower/var(pilot));
 
-        xAux2 = filter(h,1,pilot);
-
-        xAux2 = xAux2;
+        xAux2 = filter(h(:,1),1,pilot);
 
         n = randn(globalLength,1) + randn(globalLength,1)*1i;
         powerSignal = xAux2'*xAux2./(globalLength);
@@ -50,13 +49,18 @@ for delay = 1:length(delayVector)
         powerNoise = (powerSignal/SNR);
         n = n.*sqrt(powerNoise/powerNoiseAux);
 
-        xAux = xAux2 + n;
-
         w = zeros(adapFiltLength,maxRuns) + 1e-6;
+        
+        hoIndex = 1;
+        for k = (adapFiltLength + delayVector(delay) + length(h)):globalLength
+            
+            if k >= changingIteration
+                hoIndex = 1;
+            end
+            
+            xFiltered(k) = pilot(k:-1:k-length(h(:,hoIndex))+1).'*h(:,hoIndex) + n(k);
 
-        for k = (adapFiltLength + delayVector(delay)):globalLength
-
-            x(:,k) = xAux(k:-1:k-feedforwardLength+1);
+            x(:,k) = xFiltered(k:-1:k-feedforwardLength+1);
 
             yHat(:,k) = (pilot(-delayVector(delay) + k + 1 -1:-1:-delayVector(delay) + k + 1 - feedbackLength - 1 + 1));
             

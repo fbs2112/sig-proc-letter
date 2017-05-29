@@ -24,7 +24,7 @@ fontsize = 24;
 figProp = struct( 'size' , 24 , 'font' ,fontname , 'lineWidth' , linewidth, 'figDim', [1 1 800 600]);  
 
 
-load testSM_PAPA_Volterra.mat;
+load testPAPA_DFE_Volterra.mat;
 
 for delay = 1:size(e3,1)
     figure

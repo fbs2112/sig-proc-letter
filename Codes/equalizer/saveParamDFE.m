@@ -14,7 +14,12 @@ K = 2;             %number of products in the SML case
 M = 10;            %length of the adaptiv filter in SML case
 mu = 0.1;         %step size
 
-h = [1 0.2 -0.3];
+% h = [1 0.2 -0.3].';
+
+
+h(:,1) = [1 -2.5 1 0 2 0 0 0.7 0].';
+h(:,2) = [0.5 3 0 0.5 0.001 0.3 0 0 0].';
+
 
 h1 = [0.544 -0.252 0.593 0.236 -0.077 0.156 -0.5 0.025 -0.023 0.099].';
 h2 = [-0.204 0.274 0.023 0.024 0.022 -0.274 -0.321 -0.070 0.712 0.433].';
@@ -29,7 +34,7 @@ kappa = 0.5;
 gamma = 1e-12;
 
 feedforwardLength = 4;
-feedbackLength = 2;
+feedbackLength = 4;
    
 adapFiltLength = feedforwardLength + feedbackLength;
 
@@ -39,6 +44,7 @@ barGamma = 4*sqrt(5*noisePower); %threshold for set-membership purposes
 
 numberOfBits = 2;
 pamOrder = 2^numberOfBits;
+changingIteration = 1000;
 
 
 SNR = db2pow(30);

@@ -8,10 +8,16 @@ addpath(['..' filesep 'simParameters' filesep]);
 
 load paramDFE_FF_FB.mat;
 
+% h = [1 -2.5 1].';
+% h(4:end,:) = 0;
+h([5 8],1) = 0.5;
 
 numberOfSymbols = 2^numberOfBits;
 
 delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
+
+delayVector = 1:feedforwardLength+2;%adapFiltLength + 10;
+
 
 e3 = cell(length(delayVector),1);
 w3 = cell(length(delayVector),1);
@@ -19,7 +25,7 @@ w3 = cell(length(delayVector),1);
 
 for delay = 1:length(delayVector)
     
-    globalLength = maxRuns + adapFiltLength + delayVector(delay) - 1;
+    globalLength = maxRuns + adapFiltLength + delayVector(delay) - 1 + length(h(:,1));
 
     wIndex = zeros(adapFiltLength,globalLength,maxIt);
     e2 = zeros(globalLength,maxIt);
@@ -31,6 +37,7 @@ for delay = 1:length(delayVector)
         e = zeros(globalLength,1);
         G = zeros(adapFiltLength,adapFiltLength,globalLength);
 
+        xFiltered = zeros(globalLength,1);
         x = zeros(feedforwardLength,1);
         yHat = zeros(feedbackLength,1);
 
@@ -39,22 +46,44 @@ for delay = 1:length(delayVector)
         pilot = pammod(input,pamOrder,0,'gray');
         
         pilot = pilot.*sqrt(signalPower/var(pilot));
-
-        xAux2 = filter(h,1,pilot);
-
-        xAux2 = xAux2 + 0.2*(xAux2.^2) + 0.05*(xAux2.^3);
-
+        
+        
+        
+        for i = memoryChannelLength:length(pilot)
+            xPilot = (pilot(i:-1:i-memoryChannelLength+1));
+            for lIndex = 1:length(l1Pilot)
+               aux2(lIndex,1) = xPilot(l1Pilot(lIndex),1)*(xPilot(l2Pilot(lIndex),1));
+            end
+            xConc = [xPilot;(aux2)];
+            xAux2(i,1) = xConc.'*h(:,1);
+%             xAux2(i,1) = xPilot.'*h(:,1);
+        
+        end
+ 
+        
+        
+        
+        
+%         xAux2 = filter(h(:,1),1,pilot);
+% 
         n = randn(globalLength,1) + randn(globalLength,1)*1i;
         powerSignal = xAux2'*xAux2./(globalLength);
         powerNoiseAux = n'*n/(globalLength);
         powerNoise = (powerSignal/SNR);
         n = n.*sqrt(powerNoise/powerNoiseAux);
-
+        
         xAux = xAux2 + n;
 
         w = zeros(adapFiltLength,maxRuns) + 1e-6;
 
-        for k = (adapFiltLength + delayVector(delay)):globalLength
+        hoIndex = 1;
+        for k = (adapFiltLength + delayVector(delay) + length(h)):globalLength
+            
+            if k >= changingIteration
+                hoIndex = 1;
+            end
+            
+%             xFiltered(k) = pilot(k:-1:k-length(h(:,hoIndex))+1).'*h(:,hoIndex) + n(k);
 
             x(:,k) = xAux(k:-1:k-feedforwardLength+1);
 
@@ -89,6 +118,9 @@ for delay = 1:length(delayVector)
                 yHatConc = yHat(:,k);
             end
 
+            
+%             xFiltered(k) = xConc.'*h(:,hoIndex) + n(k);
+            
             z = [xConc;yHatConc];
 
             d(k) = (pilot(-delayVector(delay) + k + 1));
