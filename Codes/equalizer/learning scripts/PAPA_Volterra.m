@@ -33,35 +33,61 @@ for delay = 1:length(delayVector)
         e = zeros(globalLength,1);
         G = zeros(adapFiltLength,adapFiltLength,globalLength);
         
+        x = zeros(N,globalLength);
+        
         input = randi([0,numberOfSymbols-1],globalLength,1);
 
         pilot = qammod(input,numberOfSymbols,0,'gray');
 
         pilot = pilot.*sqrt(signalPower/var(pilot));
 
-        xAux2 = filter(h,1,pilot);
+        xAux = zeros(length(pilot),size(h,2));
+        
+        for channelIndex = 1:size(h,2)
+            aux2 = zeros(length(l1Pilot),1);
+            xAux2 = zeros(length(pilot),1);
+        
+            for i = memoryChannelLength:length(pilot) %Channel 1
+               xPilot = (pilot(i:-1:i-memoryChannelLength+1));
+               for lIndex = 1:length(l1Pilot)
+                  aux2(lIndex,1) = xPilot(l1Pilot(lIndex),1)*(xPilot(l2Pilot(lIndex),1));
+               end
+               xConc = [xPilot;(aux2)];
+               xAux2(i,1) = xConc.'*h(:,channelIndex);
+            end
+            
+        
+%         n = randn(globalLength,1) + randn(globalLength,1)*1i;
+        
+            n = randn(globalLength,1);
+            powerSignal = xAux2'*xAux2./(globalLength);
+            powerNoiseAux = n'*n/(globalLength);
+            powerNoise = (powerSignal/SNR);
+            n = n.*sqrt(powerNoise/powerNoiseAux);
 
-        n = randn(globalLength,1) + randn(globalLength,1)*1i;
-        powerSignal = xAux2'*xAux2./(globalLength);
-        powerNoiseAux = n'*n/(globalLength);
-        powerNoise = (powerSignal/SNR);
-        n = n.*sqrt(powerNoise/powerNoiseAux);
+            xAux(:,channelIndex) = xAux2 + n;
+        
+        end
 
-        xAux = xAux2 + n;
+        w = zeros(adapFiltLength,maxRuns) + 1e-6;
+        
+        channelIndex = 1;
 
-        xFlip = flipud(buffer(xAux,N,N-1));
-
-        w = zeros(adapFiltLength,globalLength) + 1e-1;
-
-       for k = (adapFiltLength + delayVector(delay)):globalLength
-
-            xTDLAux = zeros(adapFiltLength - N,1);
-
-            for lIndex = 1:length(l1)
-                xTDLAux(lIndex,1) = xFlip(l1(lIndex),k)*(xFlip(l2(lIndex),k));
+        for k = (adapFiltLength + delayVector(delay)):globalLength
+            
+            if k >= changingIteration
+                channelIndex = 2;
             end
 
-            xAP = [xFlip(:,k);xTDLAux];
+            x(:,k) = xAux(k:-1:k-N+1,channelIndex);
+            
+            xTDLAux = zeros(length(l1),1);
+
+            for lIndex = 1:length(l1)
+                xTDLAux(lIndex,1) = x(l1(lIndex),k)*(x(l2(lIndex),k));
+            end
+
+            xAP = [x(:,k);xTDLAux];
 
             d(k) = (pilot(-delayVector(delay) + k + 1)); 
 

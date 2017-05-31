@@ -90,6 +90,6 @@ for LIndex = 1:length(L)
     e3{LIndex} = mean(e2,2);
 
 end
-save(['.' filesep 'results' filesep 'resultsPAPATest2.mat'],'misalignment','e3','w3');
+save(['.' filesep 'results' filesep 'results01.mat'],'w3','e3','meanCount');
 
 

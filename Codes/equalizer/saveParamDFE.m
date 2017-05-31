@@ -3,7 +3,7 @@ clc;
 close all;
 
 
-maxRuns = 5000; % max runs in a single independent trial
+maxRuns = 8000; % max runs in a single independent trial
 maxIt = 20;    %number of independent trial
 signalPower = 1;    %desired input signal power
 noisePower = 1e-3;  %desired measurement noise power
@@ -17,7 +17,7 @@ mu = 0.1;         %step size
 % h = [1 0.2 -0.3].';
 
 
-h(:,1) = [1 -2.5 1 0 2 0 0 0.7 0].';
+h(:,1) = [0.5 3 5 0 0.3 0 0 1.2 0].';
 h(:,2) = [0.5 3 0 0.5 0.001 0.3 0 0 0].';
 
 
@@ -44,7 +44,7 @@ barGamma = 4*sqrt(5*noisePower); %threshold for set-membership purposes
 
 numberOfBits = 2;
 pamOrder = 2^numberOfBits;
-changingIteration = 1000;
+changingIteration = 4000;
 
 
 SNR = db2pow(30);

@@ -98,6 +98,6 @@ e3 = mean(e2,2);
 
 misalignment = mean(misalignmentAux,2);
 
-save(['.' filesep 'results' filesep 'resultsSM_0BE_Test.mat'],'misalignment','e3','meanCount','w3');
+save(['.' filesep 'results' filesep 'results03.mat'],'w3','e3','meanCount');
 
 

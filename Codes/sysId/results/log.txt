@@ -1,0 +1,6 @@
+results01: resultados para PAPA NLMS Volterra e dois canais do paper do Giannakis;
+
+results02: resultados para SM-PAPA NLMS Volterra e dois canais do paper do Giannakis;
+
+results03: resultados para SM-OBE Volterra e dois canais do paper do Giannakis;
+

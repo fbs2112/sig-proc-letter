@@ -24,7 +24,7 @@ fontsize = 24;
 figProp = struct( 'size' , 24 , 'font' ,fontname , 'lineWidth' , linewidth, 'figDim', [1 1 800 600]);  
 
 
-load testPAPA_DFE_Volterra.mat;
+load testSMOBE_Volterra.mat;
 
 for delay = 1:size(e3,1)
     figure
@@ -40,7 +40,7 @@ for delay = 1:size(e3,1)
 
     H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
     set(H,'interpreter','latex')
-    xlim([0 5000])
+%     xlim([0 5000])
     
 end
 
