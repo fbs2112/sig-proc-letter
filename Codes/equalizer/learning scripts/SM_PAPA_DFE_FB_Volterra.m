@@ -13,7 +13,7 @@ numberOfSymbols = 2^numberOfBits;
 
 delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
 
-delayVector = 1:8;%adapFiltLength + 10;
+% delayVector = 1:8;%adapFiltLength + 10;
 
 e3 = cell(length(delayVector),1);
 w3 = cell(length(delayVector),1);
@@ -149,7 +149,7 @@ for delay = 1:length(delayVector)
 
 end
 
-save(['.' filesep 'results' filesep 'testSM_PAPA_DFE_Volterra.mat'],'w3','e3','meanCount');
+save(['.' filesep 'results' filesep 'results08.mat'],'w3','e3','meanCount');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 

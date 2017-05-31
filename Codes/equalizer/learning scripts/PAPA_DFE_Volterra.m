@@ -49,42 +49,45 @@ for delay = 1:length(delayVector)
         
         
         
-        for i = memoryChannelLength:length(pilot)
-            xPilot = (pilot(i:-1:i-memoryChannelLength+1));
-            for lIndex = 1:length(l1Pilot)
-               aux2(lIndex,1) = xPilot(l1Pilot(lIndex),1)*(xPilot(l2Pilot(lIndex),1));
+        xAux = zeros(length(pilot),size(h,2));
+        
+        for channelIndex = 1:size(h,2)
+            aux2 = zeros(length(l1Pilot),1);
+            xAux2 = zeros(length(pilot),1);
+        
+            for i = memoryChannelLength:length(pilot) %Channel 1
+               xPilot = (pilot(i:-1:i-memoryChannelLength+1));
+               for lIndex = 1:length(l1Pilot)
+                  aux2(lIndex,1) = xPilot(l1Pilot(lIndex),1)*(xPilot(l2Pilot(lIndex),1));
+               end
+               xConc = [xPilot;(aux2)];
+               xAux2(i,1) = xConc.'*h(:,channelIndex);
             end
-            xConc = [xPilot;(aux2)];
-            xAux2(i,1) = xConc.'*h(:,1);
-%             xAux2(i,1) = xPilot.'*h(:,1);
+            
+        
+%         n = randn(globalLength,1) + randn(globalLength,1)*1i;
+        
+            n = randn(globalLength,1);
+            powerSignal = xAux2'*xAux2./(globalLength);
+            powerNoiseAux = n'*n/(globalLength);
+            powerNoise = (powerSignal/SNR);
+            n = n.*sqrt(powerNoise/powerNoiseAux);
+
+            xAux(:,channelIndex) = xAux2 + n;
         
         end
- 
-        
-        
-        
-        
-%         xAux2 = filter(h(:,1),1,pilot);
-% 
-        n = randn(globalLength,1) + randn(globalLength,1)*1i;
-        powerSignal = xAux2'*xAux2./(globalLength);
-        powerNoiseAux = n'*n/(globalLength);
-        powerNoise = (powerSignal/SNR);
-        n = n.*sqrt(powerNoise/powerNoiseAux);
-        
-        xAux = xAux2 + n;
 
         w = zeros(adapFiltLength,maxRuns) + 1e-6;
+        
+        channelIndex = 1;
 
-        hoIndex = 1;
-        for k = (adapFiltLength + delayVector(delay) + length(h)):globalLength
+        for k = (adapFiltLength + delayVector(delay)):globalLength
             
             if k >= changingIteration
-                hoIndex = 1;
+                channelIndex = 2;
             end
-            
-%             xFiltered(k) = pilot(k:-1:k-length(h(:,hoIndex))+1).'*h(:,hoIndex) + n(k);
 
+            x(:,k) = xAux(k:-1:k-N+1,channelIndex);
             x(:,k) = xAux(k:-1:k-feedforwardLength+1);
 
             yHat(:,k) = (pilot(-delayVector(delay) + k + 1 -1:-1:-delayVector(delay) + k + 1 - feedbackLength - 1 + 1));
@@ -141,7 +144,7 @@ for delay = 1:length(delayVector)
 
 end
 
-save(['.' filesep 'results' filesep 'testPAPA_DFE_Volterra.mat'],'w3','e3');
+save(['.' filesep 'results' filesep 'results02.mat'],'w3','e3');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 

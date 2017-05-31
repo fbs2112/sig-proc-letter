@@ -23,8 +23,53 @@ fontsize = 24;
 
 figProp = struct( 'size' , 24 , 'font' ,fontname , 'lineWidth' , linewidth, 'figDim', [1 1 800 600]);  
 
+fileVector = [2 4 5 6 8 9 12];
 
-load testSMOBE_Volterra.mat;
+for i = 1:length(fileVector)
+    load(['results0' num2str(fileVector(i)) '.mat']);
+
+    for delay = 1:size(e3,1)
+        figure
+        for l = 1:size(e3,2)
+            aux = find(e3{delay},1);
+
+            plot(10*log10((e3{delay}(aux:end))))
+            hold on;
+        end
+
+        xlabel('Iterations','interpreter','latex');
+        ylabel('MSE (dB)','interpreter','latex');
+
+        H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
+        set(H,'interpreter','latex')
+    %     xlim([0 5000])
+
+    end
+    close all
+
+    bestDelay = 6;
+
+    figure
+    for l = 1:size(e3,2)
+        aux = find(e3{bestDelay},1);
+
+        plot(10*log10((e3{bestDelay}(aux:end))))
+        hold on;
+    end
+
+    xlabel('Iterations','interpreter','latex');
+    ylabel('MSE (dB)','interpreter','latex');
+
+    H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
+    set(H,'interpreter','latex')
+    %     xlim([0 5000])
+
+
+end
+
+close all
+
+load results05.mat;
 
 for delay = 1:size(e3,1)
     figure
@@ -44,144 +89,68 @@ for delay = 1:size(e3,1)
     
 end
 
+bestDelay = 6;
 
-% 
-% close all;
-% 
-% M = 17;
-% 
-% load testOBE_DFE_FF_FB.mat;
-% 
-% for delay = 1:length(delayVector)
-%     figure
-%     for l = 1:size(e3,2)
-%         plot(10*log10((e3{delay}(M:end))))
-%         hold on;
-%     end
-% 
-%     xlabel('Iterations','interpreter','latex');
-%     ylabel('MSE (dB)','interpreter','latex');
-% 
-%     H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-%     set(H,'interpreter','latex')
+
+figure
+for l = 1:size(e3,2)
+    aux = find(e3{bestDelay},1);
+
+    plot(10*log10((e3{bestDelay}(aux:end))))
+    hold on;
+end
+
+xlabel('Iterations','interpreter','latex');
+ylabel('MSE (dB)','interpreter','latex');
+
+H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
+set(H,'interpreter','latex')
+
+
+
+close all
+
+load results06.mat;
+
+for delay = 1:size(e3,1)
+    figure
+    for l = 1:size(e3,2)
+        aux = find(e3{delay},1);
+        
+        plot(10*log10((e3{delay}(aux:end))))
+        hold on;
+    end
+
+    xlabel('Iterations','interpreter','latex');
+    ylabel('MSE (dB)','interpreter','latex');
+
+    H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
+    set(H,'interpreter','latex')
 %     xlim([0 5000])
-%     
-% end
-% 
-% close all;
-% 
-% M = 17;
-% 
-% delayVector = 1;
-% 
-% load testOBE_DFE.mat;
-% 
-% for delay = 1:length(delayVector)
-%     figure
-%     for l = 1:size(e3,2)
-%         plot(10*log10((e3{delay}(M:end))))
-%         hold on;
-%     end
-% 
-%     xlabel('Iterations','interpreter','latex');
-%     ylabel('MSE (dB)','interpreter','latex');
-% 
-%     H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-%     set(H,'interpreter','latex')
-%     xlim([0 5000])
-%     
-% end
-% 
-% 
-% 
-% 
-% close all;
-% 
-% M = 17;
-% 
-% 
-% load testSM_PAPA_LinEq.mat;
-% 
-% for delay = 1:size(e3,1)
-%     figure
-%     for l = 1:size(e3,2)
-%         plot(10*log10((e3{delay}(M:end))))
-%         hold on;
-%     end
-% 
-%     xlabel('Iterations','interpreter','latex');
-%     ylabel('MSE (dB)','interpreter','latex');
-% 
-%     H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-%     set(H,'interpreter','latex')
-%     xlim([0 500])
-%     
-% end
-% 
-% close all
-% 
-% 
-% load testSM_PAPA_DFE_LinEq.mat;
-% 
-% for delay = 1:size(e3,1)
-%     figure
-%     for l = 1:size(e3,2)
-%         plot(10*log10((e3{delay}(M:end))))
-%         hold on;
-%     end
-% 
-%     xlabel('Iterations','interpreter','latex');
-%     ylabel('MSE (dB)','interpreter','latex');
-% 
-%     H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-%     set(H,'interpreter','latex')
-%     xlim([0 500])
-%     
-% end
-% 
-% 
-% close all;
-% 
-% load testSM_PAPA_DFE_Volterra.mat;
-% 
-% for delay = 1:size(e3,1)
-%     figure
-%     for l = 1:size(e3,2)
-%         plot(10*log10((e3{delay}(M:end))))
-%         hold on;
-%     end
-% 
-%     xlabel('Iterations','interpreter','latex');
-%     ylabel('MSE (dB)','interpreter','latex');
-% 
-%     H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-%     set(H,'interpreter','latex')
-%     xlim([0 500])
-%     
-% end
-% 
-% 
-% 
-% close all;
-% 
-% load testPAPA_DFE_Volterra.mat;
-% 
-% for delay = 1:size(e3,1)
-%     figure
-%     for l = 1:size(e3,2)
-%         plot(10*log10((e3{delay}(M:end))))
-%         hold on;
-%     end
-% 
-%     xlabel('Iterations','interpreter','latex');
-%     ylabel('MSE (dB)','interpreter','latex');
-% 
-%     H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-%     set(H,'interpreter','latex')
-% %     xlim([0 500])
-%     
-% end
-% 
+    
+end
+
+bestDelay = 6;
+
+
+figure
+for l = 1:size(e3,2)
+    aux = find(e3{bestDelay},1);
+
+    plot(10*log10((e3{bestDelay}(aux:end))))
+    hold on;
+end
+
+xlabel('Iterations','interpreter','latex');
+ylabel('MSE (dB)','interpreter','latex');
+
+H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
+set(H,'interpreter','latex')
+
+
+
+
+
 
 
 

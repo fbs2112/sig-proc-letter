@@ -149,7 +149,7 @@ for delay = 1:length(delayVector)
 
 end
 
-save(['.' filesep 'results' filesep 'testSM_PAPA_DFE_Volterra.mat'],'w3','e3','meanCount');
+save(['.' filesep 'results' filesep 'results07.mat'],'w3','e3','meanCount');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 

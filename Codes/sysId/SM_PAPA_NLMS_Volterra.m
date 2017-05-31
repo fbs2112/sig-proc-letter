@@ -105,7 +105,7 @@ for LIndex = 1:length(L)
     e3{LIndex} = mean(e2,2);
 
 end
-save(['.' filesep 'results' filesep 'results02.mat'],'w3','e3','meanCount');
+save(['.' filesep 'results' filesep 'results02.mat'],'w3','e3','meanCount','misalignment');
 
 
 rmpath(['.' filesep 'simParameters' filesep]);

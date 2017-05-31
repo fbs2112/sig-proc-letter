@@ -141,7 +141,7 @@ for delay = 1:length(delayVector)
 
 end
 
-save(['.' filesep 'results' filesep 'testPAPA_DFE_FF_Volterra.mat'],'w3','e3');
+save(['.' filesep 'results' filesep 'results02.mat'],'w3','e3');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 

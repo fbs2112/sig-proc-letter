@@ -156,6 +156,6 @@ for delay = 1:length(delayVector)
 
 end    
 
-save(['.' filesep 'results' filesep 'testSMOBE_DFE_FF_FB.mat'],'w3','e3','meanCount');
+save(['.' filesep 'results' filesep 'results10.mat'],'w3','e3','meanCount');
 
 rmpath(['..' filesep 'simParameters' filesep]);

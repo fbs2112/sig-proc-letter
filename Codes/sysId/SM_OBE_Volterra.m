@@ -98,6 +98,7 @@ e3 = mean(e2,2);
 
 misalignment = mean(misalignmentAux,2);
 
-save(['.' filesep 'results' filesep 'results03.mat'],'w3','e3','meanCount');
+save(['.' filesep 'results' filesep 'results03.mat'],'w3','e3','meanCount','misalignment');
 
+rmpath(['.' filesep 'simParameters' filesep]);
 
