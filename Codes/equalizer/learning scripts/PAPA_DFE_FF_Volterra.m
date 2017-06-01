@@ -16,7 +16,7 @@ numberOfSymbols = 2^numberOfBits;
 
 delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
 
-delayVector = 1:feedforwardLength+2;%adapFiltLength + 10;
+% delayVector = 1:feedforwardLength+2;%adapFiltLength + 10;
 
 
 e3 = cell(length(delayVector),1);

@@ -23,7 +23,7 @@ meanCountVector = 5:12;
 
 auxIndex = 1;
 
-for i = 1:length(fileVector)
+for i = 3:3%length(fileVector)
     
     if i > 9
         load(['results' num2str(fileVector(i)) '.mat']);
@@ -32,24 +32,24 @@ for i = 1:length(fileVector)
     end
     
 
-%     for delay = 1:size(e3,1)
-%         figure
-%         for l = 1:size(e3,2)
-%             aux = find(e3{delay},1);
-% 
-%             plot(10*log10((e3{delay}(aux:end))))
-%             hold on;
-%         end
-% 
-%         xlabel('Iterations','interpreter','latex');
-%         ylabel('MSE (dB)','interpreter','latex');
-% 
-%         H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-%         set(H,'interpreter','latex')
-%     %     xlim([0 5000])
-% 
-%     end
-%     close all
+    for delay = 1:size(e3,1)
+        figure
+        for l = 1:size(e3,2)
+            aux = find(e3{delay},1);
+
+            plot(10*log10((e3{delay}(aux:end))))
+            hold on;
+        end
+
+        xlabel('Iterations','interpreter','latex');
+        ylabel('MSE (dB)','interpreter','latex');
+
+        H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
+        set(H,'interpreter','latex')
+    %     xlim([0 5000])
+
+    end
+    close all
 
     bestDelay = 6;
 
