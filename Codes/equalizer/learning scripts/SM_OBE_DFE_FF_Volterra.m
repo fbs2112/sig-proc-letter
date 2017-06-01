@@ -15,6 +15,8 @@ delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
 
 e3 = cell(length(delayVector),1);
 w3 = cell(length(delayVector),1);
+meanCount = zeros(length(delayVector),1);
+
 
 for delay = 1:length(delayVector)     
 
@@ -148,7 +150,7 @@ for delay = 1:length(delayVector)
         e2(:,index) = abs(delta).^2;
     end
 
-    meanCount = mean(count,2);
+    meanCount(delay) = mean(count,2);
 
     w3{delay} = mean(wIndex,3);
 
