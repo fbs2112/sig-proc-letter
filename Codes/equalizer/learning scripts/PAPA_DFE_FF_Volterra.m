@@ -8,7 +8,7 @@ addpath(['..' filesep 'simParameters' filesep]);
 
 load paramDFE_FF.mat;
 
-% h = [1 -2.5 1].';
+% h = [1 -2.5 1 0 0 0 0 0 0].';
 % h(4:end,:) = 0;
 % h([5 8],1) = 0.75;
 
@@ -16,8 +16,7 @@ numberOfSymbols = 2^numberOfBits;
 
 delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
 
-% delayVector = 1:feedforwardLength+2;%adapFiltLength + 10;
-
+delayVector = 6;
 
 e3 = cell(length(delayVector),1);
 w3 = cell(length(delayVector),1);

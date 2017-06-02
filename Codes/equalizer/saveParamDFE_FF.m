@@ -12,7 +12,7 @@ alpha = 0.01;      %forgetting factor of the correlation matrix in SML case
 
 K = 2;             %number of products in the SML case
 M = 10;            %length of the adaptiv filter in SML case
-mu = 0.1;         %step size
+mu = 0.5;         %step size
 
 h(:,1) = [0.5 3 5 0 0.3 0 0 1.2 0].';
 h(:,2) = [0.5 3 0 0.5 0.001 0.3 0 0 0].';

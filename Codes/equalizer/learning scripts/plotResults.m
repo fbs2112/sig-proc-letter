@@ -23,7 +23,7 @@ meanCountVector = 5:12;
 
 auxIndex = 1;
 
-for i = 3:3%length(fileVector)
+for i = 1:length(fileVector)
     
     if i > 9
         load(['results' num2str(fileVector(i)) '.mat']);
@@ -31,27 +31,30 @@ for i = 3:3%length(fileVector)
         load(['results0' num2str(fileVector(i)) '.mat']);
     end
     
-
-    for delay = 1:size(e3,1)
-        figure
-        for l = 1:size(e3,2)
-            aux = find(e3{delay},1);
-
-            plot(10*log10((e3{delay}(aux:end))))
-            hold on;
-        end
-
-        xlabel('Iterations','interpreter','latex');
-        ylabel('MSE (dB)','interpreter','latex');
-
-        H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-        set(H,'interpreter','latex')
-    %     xlim([0 5000])
-
-    end
+%     load teste.mat
+%     for delay = 1:size(e3,1)
+%         figure
+%         for l = 1:size(e3,2)
+%             aux = find(e3{delay},1);
+% 
+%             plot(10*log10((e3{delay}(aux:end))))
+%             hold on;
+%         end
+% 
+%         xlabel('Iterations','interpreter','latex');
+%         ylabel('MSE (dB)','interpreter','latex');
+% 
+%         H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
+%         set(H,'interpreter','latex')
+%     %     xlim([0 5000])
+% 
+%     end
     close all
 
     bestDelay = 6;
+    if i == 3
+        bestDelay = 1;
+    end
 
     figure
     for l = 1:size(e3,2)
@@ -73,33 +76,33 @@ for i = 3:3%length(fileVector)
     %     xlim([0 5000])
     
     formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'mse' num2str(i)],'en' , figProp );
-    if ismember(i,meanCountVector)
-       
-%         ct{auxIndex} = meanCount;
-        
-        if i < 10
-        
-        
-            meanCountTran(auxIndex) = mean(meanCount(find(meanCount,1):2000));
-            meanCountSS(auxIndex) = mean(meanCount(2001:4000));
-
-
-            meanCountTran_2(auxIndex) = mean(meanCount(4001:4001+2000));
-            meanCountSS_2(auxIndex) = mean(meanCount(4001+2000+1:end));
-
-        else
-            meanCountTran(auxIndex) = mean(meanCount(find(meanCount,1):200));
-            meanCountSS(auxIndex) = mean(meanCount(201:4000));
-
-
-            meanCountTran_2(auxIndex) = mean(meanCount(4001:4001+200));
-            meanCountSS_2(auxIndex) = mean(meanCount(4001+200+1:end));
-        end
-
-        
-         auxIndex = auxIndex + 1;
-        
-    end
+%     if ismember(i,meanCountVector)
+%        
+% %         ct{auxIndex} = meanCount;
+%         
+%         if i < 10
+%         
+%         
+%             meanCountTran(auxIndex) = mean(meanCount(find(meanCount,1):2000));
+%             meanCountSS(auxIndex) = mean(meanCount(2001:4000));
+% 
+% 
+%             meanCountTran_2(auxIndex) = mean(meanCount(4001:4001+2000));
+%             meanCountSS_2(auxIndex) = mean(meanCount(4001+2000+1:end));
+% 
+%         else
+%             meanCountTran(auxIndex) = mean(meanCount(find(meanCount,1):200));
+%             meanCountSS(auxIndex) = mean(meanCount(201:4000));
+% 
+% 
+%             meanCountTran_2(auxIndex) = mean(meanCount(4001:4001+200));
+%             meanCountSS_2(auxIndex) = mean(meanCount(4001+200+1:end));
+%         end
+% 
+%         
+%          auxIndex = auxIndex + 1;
+%         
+%     end
 
 end
 
