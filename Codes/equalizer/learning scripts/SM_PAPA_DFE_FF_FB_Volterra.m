@@ -143,7 +143,7 @@ for delay = 1:length(delayVector)
         e2(:,index) = abs(e).^2;
     end
 
-    meanCount(delay) = mean{count,2};
+    meanCount{delay} = mean(count,2);
 
     w3{delay} = mean(wIndex,3);
 

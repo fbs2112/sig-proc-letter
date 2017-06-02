@@ -23,7 +23,7 @@ meanCountVector = 5:12;
 
 auxIndex = 1;
 
-for i = 1:length(fileVector)
+for i = 6:6%length(fileVector)
     
     if i > 9
         load(['results' num2str(fileVector(i)) '.mat']);
@@ -49,7 +49,7 @@ for i = 1:length(fileVector)
 %     %     xlim([0 5000])
 % 
 %     end
-    close all
+%     close all
 
     bestDelay = 6;
     if i == 3
@@ -75,7 +75,7 @@ for i = 1:length(fileVector)
 %     set(H,'interpreter','latex')
     %     xlim([0 5000])
     
-    formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'mse' num2str(i)],'en' , figProp );
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'mse' num2str(i)],'en' , figProp );
 %     if ismember(i,meanCountVector)
 %        
 % %         ct{auxIndex} = meanCount;
