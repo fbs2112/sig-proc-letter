@@ -23,6 +23,36 @@ meanCountVector = 5:12;
 
 auxIndex = 1;
 
+
+
+
+
+load testLen.mat
+
+
+
+for i = 1:size(e4,1)
+    for j = 1:size(e4,2)
+        x = e4{i,j};
+        for k = 1:5
+            figure
+            aux = find(x{k},1);
+
+            plot(10*log10((x{k}(aux:end))))
+            
+            hold on;
+        end
+        close all;
+    end
+end
+            
+
+
+
+
+
+
+
 for i = 1:length(fileVector)
     
     if i > 9
