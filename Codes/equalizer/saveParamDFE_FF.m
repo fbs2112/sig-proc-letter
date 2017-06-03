@@ -3,7 +3,7 @@ clc;
 close all;
 
 
-maxRuns = 8000; % max runs in a single independent trial
+maxRuns = 10000; % max runs in a single independent trial
 maxIt = 1000;    %number of independent trial
 signalPower = 1;    %desired input signal power
 noisePower = 1e-3;  %desired measurement noise power
@@ -36,41 +36,60 @@ volterraFFFlag = 1;
 volterraFBFlag = 0;
 
 
-feedforwardLength = 6;
-feedbackLength = 6;
+feedforwardLength = 1:8;
+feedbackLength = 1:8;
 
-adaptfiltFF = (feedforwardLength^2+feedforwardLength)/2 + feedforwardLength;
-adaptfiltFB = (feedbackLength^2+feedbackLength)/2 + feedbackLength;
 
-adaptfilt = adaptfiltFF + adaptfiltFB;
+% feedforwardLength = 6;
+% feedbackLength = 6;
 
-auxMatrix = triu(ones(feedforwardLength));
-[l1FF,l2FF] = find(auxMatrix);
+adaptfiltFF = zeros(length(feedforwardLength),1);
+l1FF = cell(length(feedforwardLength),1);
+l2FF = cell(length(feedforwardLength),1);
 
-auxMatrix = triu(ones(feedbackLength));
-[l1FB,l2FB] = find(auxMatrix);
+l1FB = cell(length(feedbackLength),1);
+l2FB = cell(length(feedbackLength),1);
+
+adaptfiltFB = zeros(length(feedbackLength),1);
+adapFiltLength = zeros(length(feedforwardLength),length(feedbackLength));
+
+for i = 1:length(feedforwardLength)
+    adaptfiltFF(i) = (feedforwardLength(i)^2+feedforwardLength(i))/2 + feedforwardLength(i);
+    auxMatrix = triu(ones(feedforwardLength(i)));
+    [l1FF{i},l2FF{i}] = find(auxMatrix);
+    for j = 1:length(feedbackLength)
+
+        
+        adaptfiltFB(j) = (feedbackLength(j)^2+feedbackLength(j))/2 + feedbackLength(j);
+        
+
+        auxMatrix = triu(ones(feedbackLength(j)));
+        [l1FB{j},l2FB{j}] = find(auxMatrix);
+
+        
+
+        if ~volterraFFFlag
+            adaptfiltFF(i) = feedforwardLength(i);
+        end
+
+        if ~volterraFBFlag
+            adaptfiltFB(j) = feedbackLength(j);
+        end
+
+
+        adapFiltLength(i,j) = adaptfiltFF(i) + adaptfiltFB(j);
+    end
+end
 
 auxMatrix = triu(ones(memoryChannelLength));
 [l1Pilot,l2Pilot] = find(auxMatrix);
-
-
-if ~volterraFFFlag
-    adaptfiltFF = feedforwardLength;
-end
-
-if ~volterraFBFlag
-    adaptfiltFB = feedbackLength;
-end
-
-   
-adapFiltLength = adaptfiltFF + adaptfiltFB;
 
 
 barGamma = 4*sqrt(5*noisePower); %threshold for set-membership purposes
 
 
 numberOfBits = 2;
-changingIteration = 4000;
+changingIteration = 5000;
 
 pamOrder = 2^numberOfBits;
 

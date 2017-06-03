@@ -3,7 +3,7 @@ clc;
 close all;
 
 
-maxRuns = 8000; % max runs in a single independent trial
+maxRuns = 10000; % max runs in a single independent trial
 maxIt = 1000;    %number of independent trial
 signalPower = 1;    %desired input signal power
 noisePower = 1e-3;  %desired measurement noise power
@@ -29,11 +29,21 @@ ho = kron(h1,h2); %unknown system in SML case
 %-------------------------------------------------------------------------%
 %Volterra set-membership
 
-N = 6;
+N = 1:8;
 
-auxMatrix = triu(ones(N));
-[l1,l2] = find(auxMatrix);
-adapFiltLength = (N^2+N)/2 + N;
+
+% N = 6;
+
+l1 = cell(length(N),1);
+l2 = cell(length(N),1);
+adapFiltLength = zeros(length(N),1);
+
+for i = 1:length(N)
+    auxMatrix = triu(ones(N(i)));
+    [l1{i},l2{i}] = find(auxMatrix);
+    adapFiltLength(i) = (N(i)^2+N(i))/2 + N(i);
+end
+
 kappa = 0.5;
 gamma = 1e-12;
 
@@ -49,7 +59,7 @@ auxMatrix = triu(ones(memoryChannelLength));
 [l1Pilot,l2Pilot] = find(auxMatrix);
 
 
-changingIteration = 4000;
+changingIteration = 5000;
 
 
 SNR = db2pow(30);

@@ -23,7 +23,7 @@ meanCountVector = 5:12;
 
 auxIndex = 1;
 
-for i = 6:6%length(fileVector)
+for i = 1:length(fileVector)
     
     if i > 9
         load(['results' num2str(fileVector(i)) '.mat']);
@@ -52,7 +52,7 @@ for i = 6:6%length(fileVector)
 %     close all
 
     bestDelay = 6;
-    if i == 3
+    if i == 3 || i == 6
         bestDelay = 1;
     end
 
@@ -76,33 +76,33 @@ for i = 6:6%length(fileVector)
     %     xlim([0 5000])
     
 %     formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'mse' num2str(i)],'en' , figProp );
-%     if ismember(i,meanCountVector)
-%        
-% %         ct{auxIndex} = meanCount;
-%         
-%         if i < 10
-%         
-%         
-%             meanCountTran(auxIndex) = mean(meanCount(find(meanCount,1):2000));
-%             meanCountSS(auxIndex) = mean(meanCount(2001:4000));
-% 
-% 
-%             meanCountTran_2(auxIndex) = mean(meanCount(4001:4001+2000));
-%             meanCountSS_2(auxIndex) = mean(meanCount(4001+2000+1:end));
-% 
-%         else
-%             meanCountTran(auxIndex) = mean(meanCount(find(meanCount,1):200));
-%             meanCountSS(auxIndex) = mean(meanCount(201:4000));
-% 
-% 
-%             meanCountTran_2(auxIndex) = mean(meanCount(4001:4001+200));
-%             meanCountSS_2(auxIndex) = mean(meanCount(4001+200+1:end));
-%         end
-% 
-%         
-%          auxIndex = auxIndex + 1;
-%         
-%     end
+    if ismember(i,meanCountVector)
+       
+%         ct{auxIndex} = meanCount;
+        
+        if i < 9
+        
+        
+            meanCountTran(auxIndex) = mean(meanCount{bestDelay}(find(meanCount{bestDelay},1):2000));
+            meanCountSS(auxIndex) = mean(meanCount{bestDelay}(2001:4000));
+
+
+            meanCountTran_2(auxIndex) = mean(meanCount{bestDelay}(4001:4001+2000));
+            meanCountSS_2(auxIndex) = mean(meanCount{bestDelay}(4001+2000+1:end));
+
+        else
+            meanCountTran(auxIndex) = mean(meanCount{bestDelay}(find(meanCount{bestDelay},1):200));
+            meanCountSS(auxIndex) = mean(meanCount{bestDelay}(201:4000));
+
+
+            meanCountTran_2(auxIndex) = mean(meanCount{bestDelay}(4001:4001+200));
+            meanCountSS_2(auxIndex) = mean(meanCount{bestDelay}(4001+200+1:end));
+        end
+
+        
+         auxIndex = auxIndex + 1;
+        
+    end
 
 end
 
