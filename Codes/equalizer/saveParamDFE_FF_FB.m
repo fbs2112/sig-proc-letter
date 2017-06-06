@@ -4,7 +4,7 @@ close all;
 
 
 maxRuns = 10000; % max runs in a single independent trial
-maxIt = 1000;    %number of independent trial
+maxIt = 2;    %number of independent trial
 signalPower = 1;    %desired input signal power
 noisePower = 1e-3;  %desired measurement noise power
 
@@ -35,8 +35,8 @@ memoryChannelLength = 3;
 volterraFFFlag = 1;
 volterraFBFlag = 1;
 
-feedforwardLength = 3:8;
-feedbackLength = 3:8;
+feedforwardLength = 1:5;
+feedbackLength = 1:5;
 
 
 % feedforwardLength = 6;

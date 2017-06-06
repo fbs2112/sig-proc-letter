@@ -10,20 +10,18 @@ load paramDFE_FF_FB.mat;
 
 numberOfSymbols = 2^numberOfBits;
 
-e4 = cell(length(feedforwardLength),length(feedforwardLength));
-w4 = cell(length(feedforwardLength),length(feedforwardLength));
-meanCount2 = cell(length(feedforwardLength),length(feedforwardLength));
+e4 = cell(length(feedforwardLength),length(feedbackLength));
+w4 = cell(length(feedforwardLength),length(feedbackLength));
+meanCount2 = cell(length(feedforwardLength),length(feedbackLength));
 
 
-maxIt = 10;
-
-for FFIndex = 1:1%length(feedforwardLength)
+for FFIndex = 1:length(feedforwardLength)
     FFIndex
-    for FBIndex = 1:1%length(feedforwardLength)
+    for FBIndex = 1:length(feedbackLength)
          FBIndex
 %         delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
 
-        delayVector = 0:feedforwardLength(FFIndex)+5;%adapFiltLength + 10;
+        delayVector = 1:feedforwardLength(FFIndex)+length(h);
 
         e3 = cell(length(delayVector),1);
         w3 = cell(length(delayVector),1);
@@ -164,7 +162,7 @@ for FFIndex = 1:1%length(feedforwardLength)
     end
 end
 
-save(['.' filesep 'results' filesep 'testLen.mat'],'w4','e4','meanCount2');
+save(['.' filesep 'results' filesep 'results18.mat'],'w4','e4','meanCount2');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 

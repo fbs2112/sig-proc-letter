@@ -17,15 +17,11 @@ w4 = cell(length(N),1);
 
 % delayVector = 1:N+length(h);%adapFiltLength + 10;
 
-
-maxIt = 20;
-
-
 for NIndex = 1:length(N)
     NIndex
     
 %         delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
-    delayVector = 1:N(NIndex)+5;%adapFiltLength + 10;
+    delayVector = 1:N(NIndex)+length(h);%adapFiltLength + 10;
     e3 = cell(length(delayVector),1);
     w3 = cell(length(delayVector),1);
     
@@ -126,7 +122,7 @@ for NIndex = 1:length(N)
     e4{NIndex} = e3;
     
 end
-save(['.' filesep 'results' filesep 'testLen2.mat'],'w4','e4');
+save(['.' filesep 'results' filesep 'results13.mat'],'w4','e4');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 
