@@ -120,7 +120,7 @@ for NIndex = 1:length(N)
                 else
                     mu(k) = 0;
                     w(:,k+1) = w(:,k);
-                    G(:,:,k) = eye(adapFiltLength(FFIndex,FBIndex));
+                    G(:,:,k) = eye(adapFiltLength(NIndex));
                 end
 
             end
