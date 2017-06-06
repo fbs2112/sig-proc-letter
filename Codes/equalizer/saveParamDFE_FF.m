@@ -4,7 +4,7 @@ close all;
 
 
 maxRuns = 10000; % max runs in a single independent trial
-maxIt = 10;    %number of independent trial
+maxIt = 1000;    %number of independent trial
 signalPower = 1;    %desired input signal power
 noisePower = 1e-3;  %desired measurement noise power
 

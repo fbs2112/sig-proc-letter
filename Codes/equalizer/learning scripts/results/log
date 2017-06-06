@@ -23,5 +23,31 @@ results 23: resultados para SM-OBE DFE FF com 10 loops de montecarlo;
 results 24: resultados para SM-OBE DFE FB com 10 loops de montecarlo;
 
 
+results 25 resultados para PAPA NLMS Volterra com 1000 loops de montecarlo;
+
+results 26: resultados para PAPA NLMS DFE FF e FB com 1000 loops de montecarlo;
+
+results 27: resultados para PAPA NLMS DFE FF com 1000 loops de montecarlo;
+
+results 28: resultados para PAPA NLMS DFE FB com 1000 loops de montecarlo;
+
+results 29: resultados para SM-PAPA NLMS Volterra com 1000 loops de montecarlo;
+
+results 30: resultados para SM-PAPA NLMS DFE FF e FB com 1000 loops de montecarlo;
+
+results 31: resultados para SM-PAPA NLMS DFE FF com 1000 loops de montecarlo;
+
+results 32: resultados para SM-PAPA NLMS DFE FB com 1000 loops de montecarlo;
+
+results 33: resultados para SM-OBE Volterra com 1000 loops de montecarlo;
+
+results 34: resultados para SM-OBE DFE FF e FB com 1000 loops de montecarlo;
+
+results 35: resultados para SM-OBE DFE FF com 1000 loops de montecarlo;
+
+results 36: resultados para SM-OBE DFE FB com 1000 loops de montecarlo;
+
+
+
 
 

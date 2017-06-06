@@ -17,7 +17,7 @@ fontsize = 24;
 
 figProp = struct( 'size' , 24 , 'font' ,fontname , 'lineWidth' , linewidth, 'figDim', [1 1 800 600]);  
 
-fileVector = 1:12;
+fileVector = 13:24;
 
 meanCountVector = 5:12;
 
@@ -25,23 +25,23 @@ auxIndex = 1;
 
 
 
+for l = 5:length(fileVector)
+    
+    load(['results' num2str(fileVector(l)) '.mat']);
+    for i = 1:size(e4,1)
+        for j = 1:size(e4,2)
+            x = e4{i,j};
+            for k = 1:size(x,1)
+                figure
+                aux = find(x{k},1);
 
-load testLen.mat
-
-
-
-for i = 1:1%size(e4,1)
-    for j = 1:1%size(e4,2)
-        x = e4{i,j};
-        for k = 1:size(x,1)
-            figure
-            aux = find(x{k},1);
-
-            plot(10*log10((x{k}(aux:end))))
-            
+                plot(10*log10((x{k}(aux:end))))
+                 title(['N_{FF} = ' num2str(i) ', N_{FB} = ' num2str(j)])
+            end
+            close all;
         end
-        close all;
     end
+    
 end
 
 
