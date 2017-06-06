@@ -17,13 +17,13 @@ meanCount2 = cell(length(feedforwardLength),length(feedforwardLength));
 
 maxIt = 10;
 
-for FFIndex = 1:length(feedforwardLength)
+for FFIndex = 1:1%length(feedforwardLength)
     FFIndex
-    for FBIndex = 1:length(feedforwardLength)
+    for FBIndex = 1:1%length(feedforwardLength)
          FBIndex
 %         delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
 
-        delayVector = feedforwardLength(FFIndex)-2:feedforwardLength(FFIndex)+2;%adapFiltLength + 10;
+        delayVector = 0:feedforwardLength(FFIndex)+5;%adapFiltLength + 10;
 
         e3 = cell(length(delayVector),1);
         w3 = cell(length(delayVector),1);

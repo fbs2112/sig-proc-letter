@@ -29,7 +29,7 @@ ho = kron(h1,h2); %unknown system in SML case
 %-------------------------------------------------------------------------%
 %Volterra set-membership
 
-N = 1:8;
+N = 1:5;
 
 
 % N = 6;

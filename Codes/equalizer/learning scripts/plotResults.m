@@ -26,24 +26,44 @@ auxIndex = 1;
 
 
 
-
 load testLen.mat
 
 
 
-for i = 1:size(e4,1)
-    for j = 1:size(e4,2)
+for i = 1:1%size(e4,1)
+    for j = 1:1%size(e4,2)
         x = e4{i,j};
-        for k = 1:5
+        for k = 1:size(x,1)
             figure
             aux = find(x{k},1);
 
             plot(10*log10((x{k}(aux:end))))
             
-            hold on;
         end
         close all;
     end
+end
+
+
+
+
+load testLen2.mat
+
+
+
+for i = 1:size(e4,1)
+    
+    x = e4{i,1};
+    for k = 1:size(x,1)
+        figure
+        aux = find(x{k},1);
+
+        plot(10*log10((x{k}(aux:end))))
+        title(['N = ' num2str(i)])
+
+    end
+    close all;
+   
 end
             
 
