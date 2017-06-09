@@ -16,12 +16,15 @@ numberOfSymbols = 2^numberOfBits;
 e4 = cell(length(N),1);
 w4 = cell(length(N),1);
 meanCount2 = cell(length(N),1);
+maxIt = 20;
+signalPower = 1;
 
 
-for NIndex = 1:length(N)
+for NIndex = 5:5%length(N)
 
 
-    delayVector = 1:N(NIndex)+length(h);%adapFiltLength + 10;
+%     delayVector = 1:N(NIndex)+length(h);%adapFiltLength + 10;
+    delayVector = N(NIndex)+1;
 
     e3 = cell(length(delayVector),1);
     w3 = cell(length(delayVector),1);
@@ -42,8 +45,8 @@ for NIndex = 1:length(N)
             index
 
             d = zeros(globalLength,1);
-            P = zeros(adapFiltLength(NIndex),adapFiltLength(NIndex),maxIt);
-            P(:,:,adapFiltLength(NIndex) + delayVector(delay)) = eye(adapFiltLength(NIndex))*1e-6;
+            P = zeros(adapFiltLength(NIndex),adapFiltLength(NIndex),globalLength);
+            P(:,:,adapFiltLength(NIndex) + delayVector(delay)) = eye(adapFiltLength(NIndex))*1e-8;
             sigma = zeros(globalLength,1);
             sigma(adapFiltLength(NIndex) + delayVector(delay)) = 1;
             delta = zeros(globalLength,1);
@@ -51,12 +54,14 @@ for NIndex = 1:length(N)
             G = zeros(globalLength,1);
 
             x = zeros(N(NIndex),globalLength);
+            xAP = zeros(adapFiltLength(NIndex),globalLength);
 
             input = randi([0,numberOfSymbols-1],globalLength,1);
 
             pilot = pammod(input,pamOrder,0,'gray');
 
-            pilot = pilot.*sqrt(signalPower/var(pilot));
+%             pilot = pilot.*sqrt(signalPower/var(pilot));
+            pilot = pilot./max(abs(pilot));
 
             xAux = zeros(length(pilot),size(h,2));
 
@@ -86,7 +91,7 @@ for NIndex = 1:length(N)
 
             end
 
-            theta = zeros(adapFiltLength(NIndex),globalLength) + 1e-6;
+            theta = zeros(adapFiltLength(NIndex),globalLength);
 
             channelIndex = 1;
 
@@ -104,19 +109,22 @@ for NIndex = 1:length(N)
                     xTDLAux(lIndex,1) = x(l1{NIndex}(lIndex),k)*(x(l2{NIndex}(lIndex),k));
                 end
                 
-                xAP = [x(:,k);xTDLAux];
+                xAP(:,k) = [x(:,k);xTDLAux];
 
                 d(k) = (pilot(-delayVector(delay) + k + 1)); 
 
-                delta(k) = d(k) - theta(:,k).'*xAP(:,1);
-                G(k) = xAP.'*P(:,:,k)*conj(xAP);
-
+                delta(k) = d(k) - theta(:,k).'*xAP(:,k);
+                G(k) = xAP(:,k).'*P(:,:,k)*conj(xAP(:,k));
+                
                 if abs(delta(k)) > barGamma
                     lambda(k) = (1/G(k))*((abs(delta(k))/barGamma) - 1);
 
-                    P(:,:,k+1) = P(:,:,k) - (lambda(k)*P(:,:,k)*conj(xAP)*xAP.'*P(:,:,k))/(1+lambda(k)*G(k));
+                    P(:,:,k+1) = P(:,:,k) - (lambda(k)*P(:,:,k)*conj(xAP(:,k))*xAP(:,k).'*P(:,:,k))/(1+lambda(k)*G(k));
+                    if isnan(P(:,:,k+1))
+                            P(:,:,k+1) ;
+                    end
 
-                    theta(:,k+1) = theta(:,k) + lambda(k)*P(:,:,k+1)*conj(xAP)*delta(k);
+                    theta(:,k+1) = theta(:,k) + lambda(k)*P(:,:,k+1)*conj(xAP(:,k))*delta(k);
 
                     sigma(k+1) = sigma(k) - (lambda(k)*delta(k)^2)/(1+lambda(k)*G(k)) + lambda(k)*delta(k)^2;
 
@@ -145,7 +153,7 @@ for NIndex = 1:length(N)
     
 end
 
-save(['.' filesep 'results' filesep 'results33.mat'],'e4','w4','meanCount2');
+% save(['.' filesep 'results' filesep 'results33.mat'],'e4','w4','meanCount2');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 

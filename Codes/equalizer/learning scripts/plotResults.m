@@ -17,7 +17,10 @@ fontsize = 24;
 
 figProp = struct( 'size' , 24 , 'font' ,fontname , 'lineWidth' , linewidth, 'figDim', [1 1 800 600]);  
 
-fileVector = 13:24;
+fileVector = [33];
+
+% fileVector = [33];
+
 
 meanCountVector = 5:12;
 
@@ -25,24 +28,83 @@ auxIndex = 1;
 
 
 
-for l = 5:length(fileVector)
+for l = 1:length(fileVector)
+    
+    load(['results' num2str(fileVector(l)) '.mat']);
+    for i = 1:size(e4,1)
+        for j = 1:size(e4,2)
+            
+            x = e4{i,j};
+%             for k = 1:size(x,1)
+                figure
+                aux = find(x{1},1);
+
+                plot(10*log10((x{1}(aux:end))))
+                
+                y(i,j) = mean(10*log10((x{1}(end/2 - 999:end/2-1))));
+%                  H = legend('$N = 1$','$N = 2$','$N = 3$','$N = 4$','$N = 5$');
+%                 set(H,'interpreter','latex')
+%                 ylim([-25 20]);
+                hold on
+    
+                xlim([0 10000]);
+% %                 formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-09' filesep 'msePAPA_Volterra'],'en' , figProp );
+%                  title([num2str(l) 'N_{FF} = ' num2str(i) ', N_{FB} = ' num2str(j)])
+%             end
+            close all;
+        end
+    end
+    figure
+    colormap('parula')
+    imagesc(y)
+    c = colorbar;
+    ylabel(c,'[dB]','interpreter','latex')
+    xlabel('$N_{FB}$','interpreter','latex');
+    ylabel('$N_{FF}$','interpreter','latex');
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-09' filesep 'mse'  num2str(fileVector(l))],'en' , figProp );
+
+    
+end
+% 
+% 
+
+
+
+for l = 1:length(fileVector)
     
     load(['results' num2str(fileVector(l)) '.mat']);
     for i = 1:size(e4,1)
         for j = 1:size(e4,2)
             x = e4{i,j};
-            for k = 1:size(x,1)
-                figure
-                aux = find(x{k},1);
+%             for k = 1:size(x,1)
+%                 figure
+                aux = find(x{i+1},1);
 
-                plot(10*log10((x{k}(aux:end))))
-                 title(['N_{FF} = ' num2str(i) ', N_{FB} = ' num2str(j)])
-            end
-            close all;
+                plot(10*log10((x{i+1}(aux:end))))
+                H = legend('$N = 1$','$N = 2$','$N = 3$','$N = 4$','$N = 5$');
+                set(H,'interpreter','latex')
+                xlabel('Iterations','interpreter','latex');
+                ylabel('MSE (dB)','interpreter','latex');
+                ylim([-25 20]);    
+                xlim([0 10000]);
+                hold on
+
+%                  title([num2str(l) 'N_{FF} = ' num2str(i) ', N_{FB} = ' num2str(j)])
+%             end
+%             close all;
         end
     end
-    
+    formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-09' filesep 'mseSMPAPA_Volterra'],'en' , figProp );
+
 end
+
+
+
+
+
+
+
+
 
 
 
