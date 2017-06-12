@@ -19,8 +19,18 @@ meanCount2 = cell(length(N),1);
 maxIt = 20;
 signalPower = 1;
 
+% h(:,1) = [0.5 3 5 0 0.4 0 0 1.3 0].';
+% h(:,1) = h(:,2);
+% h(:,2) = [1 -2.5 0 0.01 0.007 0.2 0 0 0].';
 
-for NIndex = 5:5%length(N)
+% c = h(:,2);
+% h(:,2) = h(:,1);
+% h(:,1) = c;
+
+% h(:,2) = randn(9,1);
+
+% barGamma = sqrt(5*noisePower);
+for NIndex = 2:2%length(N)
 
 
 %     delayVector = 1:N(NIndex)+length(h);%adapFiltLength + 10;
@@ -29,8 +39,10 @@ for NIndex = 5:5%length(N)
     e3 = cell(length(delayVector),1);
     w3 = cell(length(delayVector),1);
     meanCount = cell(length(delayVector));
-
-
+    numberOfSymbols = 4;
+    pamOrder = 4;
+%       = 0.05;
+    signalPower = 0.9;
     for delay = 1:length(delayVector)
         delay
         globalLength = maxRuns + adapFiltLength(NIndex) + delayVector(delay) - 1;
@@ -46,7 +58,7 @@ for NIndex = 5:5%length(N)
 
             d = zeros(globalLength,1);
             P = zeros(adapFiltLength(NIndex),adapFiltLength(NIndex),globalLength);
-            P(:,:,adapFiltLength(NIndex) + delayVector(delay)) = eye(adapFiltLength(NIndex))*1e-8;
+            P(:,:,adapFiltLength(NIndex) + delayVector(delay)) = eye(adapFiltLength(NIndex))*1e-3;
             sigma = zeros(globalLength,1);
             sigma(adapFiltLength(NIndex) + delayVector(delay)) = 1;
             delta = zeros(globalLength,1);
@@ -60,8 +72,8 @@ for NIndex = 5:5%length(N)
 
             pilot = pammod(input,pamOrder,0,'gray');
 
-%             pilot = pilot.*sqrt(signalPower/var(pilot));
-            pilot = pilot./max(abs(pilot));
+            pilot = pilot.*sqrt(signalPower/var(pilot));
+%             pilot = pilot./max(abs(pilot));
 
             xAux = zeros(length(pilot),size(h,2));
 
@@ -88,9 +100,12 @@ for NIndex = 5:5%length(N)
                 n = n.*sqrt(powerNoise/powerNoiseAux);
 
                 xAux(:,channelIndex) = xAux2 + n;
+%                 xAux(:,channelIndex) = xAux(:,channelIndex) - mean(xAux(:,channelIndex));
+%                 xAux(:,channelIndex) = xAux(:,channelIndex).*sqrt(1/var(xAux(:,channelIndex)));
 
             end
 
+%             theta = randn(adapFiltLength(NIndex),globalLength);
             theta = zeros(adapFiltLength(NIndex),globalLength);
 
             channelIndex = 1;
@@ -110,25 +125,31 @@ for NIndex = 5:5%length(N)
                 end
                 
                 xAP(:,k) = [x(:,k);xTDLAux];
+%                 xAP(:,k) = xAP(:,k)./max(abs(xAP(:,k)));
 
                 d(k) = (pilot(-delayVector(delay) + k + 1)); 
 
                 delta(k) = d(k) - theta(:,k).'*xAP(:,k);
                 G(k) = xAP(:,k).'*P(:,:,k)*conj(xAP(:,k));
                 
-                if abs(delta(k)) > barGamma
+               
+                
+                if abs(delta(k)) > barGamma || k <= adapFiltLength(NIndex) + delayVector(delay) + adapFiltLength(NIndex)
                     lambda(k) = (1/G(k))*((abs(delta(k))/barGamma) - 1);
 
-                    P(:,:,k+1) = P(:,:,k) - (lambda(k)*P(:,:,k)*conj(xAP(:,k))*xAP(:,k).'*P(:,:,k))/(1+lambda(k)*G(k));
+%                     P(:,:,k+1) = P(:,:,k) - (lambda(k)*P(:,:,k)*conj(xAP(:,k))*xAP(:,k).'*P(:,:,k))/(1+lambda(k)*G(k));
+                    condV(k) = cond(P(:,:,k));
+
+                    P(:,:,k+1) = P(:,:,k) - (lambda(k)*P(:,:,k)*conj(xAP(:,k))*xAP(:,k).'*P(:,:,k))/(1+(abs(delta(k))/barGamma)- 1);
                     if isnan(P(:,:,k+1))
-                            P(:,:,k+1) ;
+                            P(:,:,k+1);
                     end
 
                     theta(:,k+1) = theta(:,k) + lambda(k)*P(:,:,k+1)*conj(xAP(:,k))*delta(k);
 
                     sigma(k+1) = sigma(k) - (lambda(k)*delta(k)^2)/(1+lambda(k)*G(k)) + lambda(k)*delta(k)^2;
 
-                    count(k,index) = 1;
+                    count(k,index) = 1; 
                 else
                     lambda(k) = 0;
                     P(:,:,k+1) = P(:,:,k);
