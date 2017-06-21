@@ -42,7 +42,7 @@ for NIndex = 2:2%length(N)
     numberOfSymbols = 4;
     pamOrder = 4;
 %       = 0.05;
-    signalPower = 0.9;
+%     signalPower = 0.9;
     for delay = 1:length(delayVector)
         delay
         globalLength = maxRuns + adapFiltLength(NIndex) + delayVector(delay) - 1;
@@ -58,7 +58,7 @@ for NIndex = 2:2%length(N)
 
             d = zeros(globalLength,1);
             P = zeros(adapFiltLength(NIndex),adapFiltLength(NIndex),globalLength);
-            P(:,:,adapFiltLength(NIndex) + delayVector(delay)) = eye(adapFiltLength(NIndex))*1e-3;
+            P(:,:,adapFiltLength(NIndex) + delayVector(delay)) = eye(adapFiltLength(NIndex))*1e3;
             sigma = zeros(globalLength,1);
             sigma(adapFiltLength(NIndex) + delayVector(delay)) = 1;
             delta = zeros(globalLength,1);
@@ -140,7 +140,11 @@ for NIndex = 2:2%length(N)
 %                     P(:,:,k+1) = P(:,:,k) - (lambda(k)*P(:,:,k)*conj(xAP(:,k))*xAP(:,k).'*P(:,:,k))/(1+lambda(k)*G(k));
                     condV(k) = cond(P(:,:,k));
 
-                    P(:,:,k+1) = P(:,:,k) - (lambda(k)*P(:,:,k)*conj(xAP(:,k))*xAP(:,k).'*P(:,:,k))/(1+(abs(delta(k))/barGamma)- 1);
+                    P(:,:,k+1) = P(:,:,k) - (P(:,:,k)*lambda(k)*conj(xAP(:,k))*xAP(:,k).'*P(:,:,k))/(1+(abs(delta(k))/barGamma)- 1);
+                    if ~issymmetric(P(:,:,k+1))
+                        P(:,:,k+1);
+                    end
+                    
                     if isnan(P(:,:,k+1))
                             P(:,:,k+1);
                     end
