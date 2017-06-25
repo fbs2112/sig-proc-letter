@@ -18,14 +18,14 @@ numberOfSymbols = 2^numberOfBits;
 e4 = cell(length(N),1);
 w4 = cell(length(N),1);
 meanCount2 = cell(length(N),1);
-
+% maxIt = 20;
 % delayVector = 1:N+length(h);%adapFiltLength + 10;
 
 for NIndex = 1:length(N)
     NIndex
     
-%         delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
-    delayVector = 1:N(NIndex)+length(h);%adapFiltLength + 10;
+    delayVector = N(NIndex)+1;%adapFiltLength + 10;
+    delayVector2 = [N(NIndex)+1 N(NIndex)-2];
     e3 = cell(length(delayVector),1);
     w3 = cell(length(delayVector),1);
     meanCount = cell(length(delayVector),1);
@@ -33,7 +33,7 @@ for NIndex = 1:length(N)
     for delay = 1:length(delayVector)
 
 
-        globalLength = maxRuns + adapFiltLength(NIndex) + delayVector(delay) - 1;
+        globalLength = maxRuns + adapFiltLength(NIndex) + max(delayVector2) - 1;
 
         wIndex = zeros(adapFiltLength(NIndex),globalLength,maxIt);
         e2 = zeros(globalLength,maxIt);
@@ -90,10 +90,18 @@ for NIndex = 1:length(N)
 
             channelIndex = 1;
 
-            for k = (adapFiltLength(NIndex) + delayVector(delay)):globalLength
+           for k = (adapFiltLength(NIndex) + max(delayVector2)):globalLength
 
                 if k >= changingIteration
-                    channelIndex = 2;
+                    if N(NIndex) > 1
+                        delayVector = delayVector2(2);
+                    else
+                        delayVector = delayVector2(2) + 2;
+                    end
+                        channelIndex = 2;
+                else
+                    delayVector = delayVector2(1);
+                    channelIndex = 1;
                 end
 
                 x(:,k) = xAux(k:-1:k-N(NIndex)+1,channelIndex);
@@ -142,7 +150,7 @@ for NIndex = 1:length(N)
 
 end
 
-save(['.' filesep 'results' filesep 'results29.mat'],'w4','e4','meanCount2');
+save(['.' filesep 'results' filesep 'results41.mat'],'w4','e4','meanCount2');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 

@@ -16,14 +16,15 @@ e4 = cell(length(feedforwardLength),length(feedbackLength));
 w4 = cell(length(feedforwardLength),length(feedbackLength));
 meanCount2 = cell(length(feedforwardLength),length(feedbackLength));
 
-
 for FFIndex = 1:length(feedforwardLength)
     FFIndex
     for FBIndex = 1:length(feedbackLength)
          FBIndex
 %         delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
 
-        delayVector = 1:feedforwardLength(FFIndex)+length(h);
+%         delayVector = 1:feedforwardLength(FFIndex)+length(h);%adapFiltLength + 10;
+        
+        delayVector = feedforwardLength(FFIndex)+1;%adapFiltLength + 10;
         
         
         e3 = cell(length(delayVector),1);
@@ -34,7 +35,9 @@ for FFIndex = 1:length(feedforwardLength)
         for delay = 1:length(delayVector)     
 
             delay
-            globalLength = maxRuns + adapFiltLength(FFIndex,FBIndex) + delayVector(delay) - 1;
+            
+            delayVector2 = [feedforwardLength(FFIndex)+1 feedforwardLength(FFIndex)-2];
+            globalLength = maxRuns + adapFiltLength(FFIndex,FBIndex) + max(delayVector2) - 1;
 
             wIndex = zeros(adapFiltLength(FFIndex,FBIndex),globalLength,maxIt);
             e2 = zeros(globalLength,maxIt);
@@ -45,8 +48,8 @@ for FFIndex = 1:length(feedforwardLength)
                 index
 
                 d = zeros(globalLength,1);
-                P = zeros(adapFiltLength(FFIndex,FBIndex),adapFiltLength(FFIndex,FBIndex),maxIt);
-                P(:,:,adapFiltLength(FFIndex,FBIndex) + delayVector(delay)) = eye(adapFiltLength(FFIndex,FBIndex))*1e-6;
+                P = zeros(adapFiltLength(FFIndex,FBIndex),adapFiltLength(FFIndex,FBIndex),globalLength);
+                P(:,:,adapFiltLength(FFIndex,FBIndex) + max(delayVector2)) = eye(adapFiltLength(FFIndex,FBIndex))*1e-6;
                 sigma = zeros(globalLength,1);
                 sigma(adapFiltLength(FFIndex,FBIndex) + delayVector(delay)) = 1;
                 delta = zeros(globalLength,1);
@@ -89,14 +92,22 @@ for FFIndex = 1:length(feedforwardLength)
 
                 end
 
-                theta = zeros(adapFiltLength(FFIndex,FBIndex),globalLength) + 1e-6;
+                theta = zeros(adapFiltLength(FFIndex,FBIndex),globalLength);
 
                 channelIndex = 1;
 
-                for k = (adapFiltLength(FFIndex,FBIndex) + delayVector(delay)):globalLength
+                for k = (adapFiltLength(FFIndex,FBIndex) + max(delayVector2)):globalLength
 
                     if k >= changingIteration
-                        channelIndex = 2;
+                        if feedforwardLength(FFIndex) > 1
+                            delayVector = delayVector2(2);
+                        else
+                            delayVector = delayVector2(2) + 2;
+                        end
+                            channelIndex = 2;
+                    else
+                        delayVector = delayVector2(1);
+                        channelIndex = 1;
                     end
 
                     x(:,k) = xAux(k:-1:k-feedforwardLength(FFIndex)+1,channelIndex);
@@ -138,14 +149,14 @@ for FFIndex = 1:length(feedforwardLength)
 
                     delta(k) = d(k) - theta(:,k).'*z;
 
-                    G(k) = z.'*P(:,:,k)*conj(z);
-
                     if abs(delta(k)) > barGamma
+                        G(k) = z.'*P(:,:,k)*conj(z);
                         lambda(k) = (1/G(k))*((abs(delta(k))/barGamma) - 1);
+                        lambda2 = 1/lambda(k);
 
-                        P(:,:,k+1) = P(:,:,k) - (lambda(k)*P(:,:,k)*conj(z)*z.'*P(:,:,k))/(1+lambda(k)*G(k));
+                        P(:,:,k+1) = lambda(k)*(P(:,:,k) - (P(:,:,k)*conj(z)*z.'*P(:,:,k))/(lambda2+G(k)));
 
-                        theta(:,k+1) = theta(:,k) + lambda(k)*P(:,:,k+1)*conj(z)*delta(k);
+                        theta(:,k+1) = theta(:,k) + P(:,:,k+1)*conj(z)*delta(k);
 
                         sigma(k+1) = sigma(k) - (lambda(k)*delta(k)^2)/(1+lambda(k)*G(k)) + lambda(k)*delta(k)^2;
 
@@ -179,6 +190,7 @@ for FFIndex = 1:length(feedforwardLength)
     
 end
 
-save(['.' filesep 'results' filesep 'results36.mat'],'w4','e4','meanCount2');
+
+% save(['.' filesep 'results' filesep 'results35.mat'],'w4','e4','meanCount2');
 
 rmpath(['..' filesep 'simParameters' filesep]);

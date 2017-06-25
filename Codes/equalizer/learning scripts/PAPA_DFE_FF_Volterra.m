@@ -14,27 +14,26 @@ load paramDFE_FF.mat;
 
 numberOfSymbols = 2^numberOfBits;
 
-delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
-
-
 e4 = cell(length(feedforwardLength),length(feedbackLength));
 w4 = cell(length(feedforwardLength),length(feedbackLength));
-
+% maxIt = 20;
 
 for FFIndex = 1:length(feedforwardLength)
     FFIndex
     for FBIndex = 1:length(feedbackLength)
          FBIndex
 
-        delayVector = 1:feedforwardLength(FFIndex)+length(h);%adapFiltLength + 10;
+        delayVector = feedforwardLength(FFIndex)+1;
+
+
         e3 = cell(length(delayVector),1);
         w3 = cell(length(delayVector),1);
 
 
         for delay = 1:length(delayVector)
 
-            globalLength = maxRuns + adapFiltLength(FFIndex,FBIndex) + delayVector(delay) - 1 + length(h(:,1));
-
+            delayVector2 = [feedforwardLength(FFIndex)+1 feedforwardLength(FFIndex)-2];
+            globalLength = maxRuns + adapFiltLength(FFIndex,FBIndex) + max(delayVector2) - 1;
             wIndex = zeros(adapFiltLength(FFIndex,FBIndex),globalLength,maxIt);
             e2 = zeros(globalLength,maxIt);
 
@@ -89,10 +88,18 @@ for FFIndex = 1:length(feedforwardLength)
 
                 channelIndex = 1;
 
-                for k = (adapFiltLength(FFIndex,FBIndex) + delayVector(delay)):globalLength
+               for k = (adapFiltLength(FFIndex,FBIndex) + max(delayVector2)):globalLength
 
                     if k >= changingIteration
-                        channelIndex = 2;
+                        if feedforwardLength(FFIndex) > 1
+                            delayVector = delayVector2(2);
+                        else
+                            delayVector = delayVector2(2) + 2;
+                        end
+                            channelIndex = 2;
+                    else
+                        delayVector = delayVector2(1);
+                        channelIndex = 1;
                     end
 
                     x(:,k) = xAux(k:-1:k-feedforwardLength(FFIndex)+1,channelIndex);
@@ -153,7 +160,7 @@ for FFIndex = 1:length(feedforwardLength)
     end
 end
 
-save(['.' filesep 'results' filesep 'results27.mat'],'w4','e4');
+save(['.' filesep 'results' filesep 'results39.mat'],'w4','e4');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 

@@ -63,14 +63,16 @@ for index = 1:maxIt
         d(k) = ((wo(:,woIndex).'*xAP)) + n(k);
 
         delta(k) = d(k) - theta(:,k)'*xAP; %error
-        G(k) = xAP.'*P(:,:,k)*conj(xAP);
+       
         
         if abs(delta(k)) > barGamma
+            G(k) = xAP.'*P(:,:,k)*conj(xAP);
             lambda(k) = (1/G(k))*((abs(delta(k))/barGamma) - 1);
+            lambda2 = 1/lambda(k);
             
-            P(:,:,k+1) = P(:,:,k) - (lambda(k)*P(:,:,k)*conj(xAP)*xAP.'*P(:,:,k))/(1+lambda(k)*G(k));
+            P(:,:,k+1) = lambda(k)*(P(:,:,k) - (P(:,:,k)*conj(xAP)*xAP.'*P(:,:,k))/(lambda2+G(k)));
         
-            theta(:,k+1) = theta(:,k) + lambda(k)*P(:,:,k+1)*conj(xAP)*delta(k);
+            theta(:,k+1) = theta(:,k) + P(:,:,k+1)*conj(xAP)*delta(k);
 
             sigma(k+1) = sigma(k) - (lambda(k)*delta(k)^2)/(1+lambda(k)*G(k)) + lambda(k)*delta(k)^2;
             
@@ -98,7 +100,7 @@ e3 = mean(e2,2);
 
 misalignment = mean(misalignmentAux,2);
 
-save(['.' filesep 'results' filesep 'results03.mat'],'w3','e3','meanCount','misalignment');
+% save(['.' filesep 'results' filesep 'results03.mat'],'w3','e3','meanCount','misalignment');
 
 rmpath(['.' filesep 'simParameters' filesep]);
 
