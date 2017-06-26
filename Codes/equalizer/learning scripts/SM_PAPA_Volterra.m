@@ -93,7 +93,7 @@ for NIndex = 1:length(N)
            for k = (adapFiltLength(NIndex) + max(delayVector2)):globalLength
 
                 if k >= changingIteration
-                    if N(NIndex) > 1
+                    if N(NIndex) > 2
                         delayVector = delayVector2(2);
                     else
                         delayVector = delayVector2(2) + 2;

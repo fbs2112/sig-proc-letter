@@ -86,7 +86,7 @@ for NIndex = 1:length(N)
              for k = (adapFiltLength(NIndex) + max(delayVector2)):globalLength
 
                 if k >= changingIteration
-                    if N(NIndex) > 1
+                    if N(NIndex) > 2
                         delayVector = delayVector2(2);
                     else
                         delayVector = delayVector2(2) + 2;
@@ -130,7 +130,7 @@ for NIndex = 1:length(N)
     e4{NIndex} = e3;
     
 end
-save(['.' filesep 'results' filesep 'results37.mat'],'w4','e4');
+% save(['.' filesep 'results' filesep 'results37.mat'],'w4','e4');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 
