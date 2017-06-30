@@ -34,7 +34,7 @@ ylabel('MSE (dB)','interpreter','latex');
 xlim([0 2000])
 ylim([-35 15])
 
-formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'msePAPA_NLMS'],'en' , figProp );
+% formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'msePAPA_NLMS'],'en' , figProp );
 
 
 figure
@@ -53,7 +53,7 @@ ylabel('Misalignment (dB)','interpreter','latex');
 xlim([0 2000])
 ylim([-60 10])
 
-formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'misPAPA_NLMS'],'en' , figProp );
+% formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'misPAPA_NLMS'],'en' , figProp );
 
 load results02.mat;
 figure
@@ -72,7 +72,7 @@ ylabel('MSE (dB)','interpreter','latex');
 xlim([0 2000])
 ylim([-35 15])
 
-formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'mseSMPAPA_NLMS'],'en' , figProp );
+% formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'mseSMPAPA_NLMS'],'en' , figProp );
 
 
 meanCountSMPAPA_NLMS_Tran = mean(meanCount{1}(find(meanCount{1},1):200));
@@ -100,7 +100,7 @@ ylabel('Misalignment (dB)','interpreter','latex');
 xlim([0 2000])
 ylim([-60 10])
 
-formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'misSMPAPA_NLMS'],'en' , figProp );
+% formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'misSMPAPA_NLMS'],'en' , figProp );
 
 
 load results03.mat;
@@ -119,7 +119,7 @@ ylabel('MSE (dB)','interpreter','latex');
 % set(H,'interpreter','latex')
 xlim([0 2000])
 ylim([-35 10])
-formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'mseSM_OBE'],'en' , figProp );
+% formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'mseSM_OBE'],'en' , figProp );
 
 
 meanCountSM_OBE_Tran = mean(meanCount(find(meanCount,1):200));
@@ -146,7 +146,7 @@ xlim([0 2000])
 ylim([-60 15])
 
 
-formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'misSM_OBE'],'en' , figProp );
+% formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'misSM_OBE'],'en' , figProp );
 
 
 rmpath(['.' filesep 'results']);

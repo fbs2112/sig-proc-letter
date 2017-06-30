@@ -17,7 +17,7 @@ fontsize = 24;
 
 figProp = struct( 'size' , 24 , 'font' ,fontname , 'lineWidth' , linewidth, 'figDim', [1 1 800 600]);  
 
-fileVector = [33];
+fileVector = 37:48;
 
 % fileVector = [33];
 

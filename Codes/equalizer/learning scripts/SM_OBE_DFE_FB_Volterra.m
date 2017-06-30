@@ -99,7 +99,7 @@ for FFIndex = 1:length(feedforwardLength)
                 for k = (adapFiltLength(FFIndex,FBIndex) + max(delayVector2)):globalLength
 
                     if k >= changingIteration
-                        if feedforwardLength(FFIndex) > 1
+                        if feedforwardLength(FFIndex) > 2
                             delayVector = delayVector2(2);
                         else
                             delayVector = delayVector2(2) + 2;
