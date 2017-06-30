@@ -170,7 +170,7 @@ for FFIndex = 1:length(feedforwardLength)
     end
 end
 
-save(['.' filesep 'results' filesep 'results47.mat'],'w4','e4','meanCount2');
+save(['.' filesep 'results' filesep 'results43.mat'],'w4','e4','meanCount2');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 
