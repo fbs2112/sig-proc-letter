@@ -32,7 +32,7 @@ for FFIndex = 1:length(feedforwardLength)
 
         for delay = 1:length(delayVector)
 
-            delayVector2 = [feedforwardLength(FFIndex)+1 feedforwardLength(FFIndex)-2];
+            delayVector2 = [feedforwardLength(FFIndex)+1 feedforwardLength(FFIndex)+1];
             globalLength = maxRuns + adapFiltLength(FFIndex,FBIndex) + max(delayVector2) - 1;
             wIndex = zeros(adapFiltLength(FFIndex,FBIndex),globalLength,maxIt);
             e2 = zeros(globalLength,maxIt);

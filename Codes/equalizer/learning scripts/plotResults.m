@@ -17,7 +17,7 @@ fontsize = 24;
 
 figProp = struct( 'size' , 24 , 'font' ,fontname , 'lineWidth' , linewidth, 'figDim', [1 1 800 600]);  
 
-fileVector = 37:48;
+fileVector = 40;
 
 % fileVector = [33];
 
@@ -31,8 +31,8 @@ auxIndex = 1;
 for l = 1:length(fileVector)
     
     load(['results' num2str(fileVector(l)) '.mat']);
-    for i = 1:size(e4,1)
-        for j = 1:size(e4,2)
+    for i = 5:5%size(e4,1)
+        for j = 5:5%size(e4,2)
             
             x = e4{i,j};
 %             for k = 1:size(x,1)
@@ -51,16 +51,16 @@ for l = 1:length(fileVector)
 % %                 formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-09' filesep 'msePAPA_Volterra'],'en' , figProp );
 %                  title([num2str(l) 'N_{FF} = ' num2str(i) ', N_{FB} = ' num2str(j)])
 %             end
-            close all;
+%             close all;
         end
     end
-    figure
-    colormap('parula')
-    imagesc(y)
-    c = colorbar;
-    ylabel(c,'[dB]','interpreter','latex')
-    xlabel('$N_{FB}$','interpreter','latex');
-    ylabel('$N_{FF}$','interpreter','latex');
+%     figure
+%     colormap('parula')
+%     imagesc(y)
+%     c = colorbar;
+%     ylabel(c,'[dB]','interpreter','latex')
+%     xlabel('$N_{FB}$','interpreter','latex');
+%     ylabel('$N_{FF}$','interpreter','latex');
 %     formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-09' filesep 'mse'  num2str(fileVector(l))],'en' , figProp );
 
     
