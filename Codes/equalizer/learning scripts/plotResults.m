@@ -41,11 +41,83 @@ for l = 1:length(fileVector)
             end
 %             for k = 1:size(x,1)
 %                 figure
-%                 aux = find(x{1},1);
+                aux = find(x{1},1);
+% 
+                plot(10*log10((x{1}(aux:end))))
+                
+                y(i,j) = mean(10*log10((x{1}(4999 - 999:4999))));
+                convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) < y(i,j),1,'first');
+%                 treta(i,j,:) = diff(10*log10(x{1}(aux:4999)));
+%                 convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) > y(i,j) + 0.2*abs(y(i,j)),1,'last');
+%                  H = legend('$N = 1$','$N = 2$','$N = 3$','$N = 4$','$N = 5$');
+%                 set(H,'interpreter','latex')
+%                 ylim([-25 20]);
+%                 hold on
+    
+%                 xlim([0 10000]);
+% %                 formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-09' filesep 'msePAPA_Volterra'],'en' , figProp );
+%                  title([num2str(l) 'N_{FF} = ' num2str(i) ', N_{FB} = ' num2str(j)])
+%             end
+%             close all;
+        end
+    end
+%     figure
+%     colormap(jet)
+%     imagesc(y)
+%     c = colorbar;
+%     ylabel(c,'[dB]','interpreter','latex')
+%     set(c,'ylim',[-25 10]);
+%     set(c,'ytick',-25:5:10);
+% %     caxis manual
+% %     caxis([bottom top]);
+% 
+%     xlabel('$N_{\mathrm{FB}}$','interpreter','latex');
+%     ylabel('$N_{\mathrm{FF}}$','interpreter','latex');
+%     set(gca,'ytick',1:5);
+% 
+%     ylim([1 5])
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-07' filesep 'mse'  num2str(fileVector(l))],'en' , figProp );
+
+    minAxis(l) = min(min(y));
+    
+    maxAxis(l) = max(max(y(y~=0)));
+    
+    
+    minAxisConv(l) = min(min(convergenceSample));
+    
+    maxAxisConv(l) = max(max(convergenceSample(y~=0)));
+    
+    
+    
+end
+
+
+
+
+
+
+
+for l = 1:length(fileVector)
+    
+    load(['results' num2str(fileVector(l)) '.mat']);
+    for i = 1:size(e4,1)
+        for j = 1:size(e4,2)
+            
+            if fileVector(l) == 37 || fileVector(l) == 41 || fileVector(l) == 45
+                x = e4{i};
+            else
+                x = e4{i,j};
+            end
+%             for k = 1:size(x,1)
+%                 figure
+                aux = find(x{1},1);
 % 
 %                 plot(10*log10((x{1}(aux:end))))
                 
-                y(i,j) = mean(10*log10((x{1}(end/2 - 999:end/2-1))));
+                y(i,j) = mean(10*log10((x{1}(4999 - 999:4999))));
+                convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) < y(i,j),1,'first');
+%                 treta(i,j,:) = diff(10*log10(x{1}(aux:4999)));
+%                 convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) > y(i,j) + 0.2*abs(y(i,j)),1,'last');
 %                  H = legend('$N = 1$','$N = 2$','$N = 3$','$N = 4$','$N = 5$');
 %                 set(H,'interpreter','latex')
 %                 ylim([-25 20]);
@@ -65,18 +137,38 @@ for l = 1:length(fileVector)
     ylabel(c,'[dB]','interpreter','latex')
     set(c,'ylim',[-25 10]);
     set(c,'ytick',-25:5:10);
-%     caxis manual
-%     caxis([bottom top]);
+    caxis manual
+    caxis([floor(min(minAxis)) ceil(max(maxAxis))]);
 
     xlabel('$N_{\mathrm{FB}}$','interpreter','latex');
     ylabel('$N_{\mathrm{FF}}$','interpreter','latex');
     set(gca,'ytick',1:5);
 
     ylim([1 5])
-    formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-07' filesep 'mse'  num2str(fileVector(l))],'en' , figProp );
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-07' filesep 'mse'  num2str(fileVector(l))],'en' , figProp );
+
+
+
+    figure
+    colormap(jet)
+    imagesc(convergenceSample)
+    c = colorbar;
+    ylabel(c,'Iterations until Convergence','interpreter','latex')
+%     set(c,'ylim',[-25 10]);
+%     set(c,'ytick',-25:5:10);
+    caxis manual
+    caxis([floor(min(minAxisConv)) ceil(max(maxAxisConv))]);
+
+    xlabel('$N_{\mathrm{FB}}$','interpreter','latex');
+    ylabel('$N_{\mathrm{FF}}$','interpreter','latex');
+    set(gca,'ytick',1:5);
+
+    ylim([1 5])
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-07' filesep 'conv'  num2str(fileVector(l))],'en' , figProp );
 
     
 end
+
 
 
 close all
@@ -98,7 +190,8 @@ for i = 1:size(e4,1)
 
         plot(10*log10((x{1}(aux:end))))
 
-        mse(i,l) = mean(10*log10((x{1}(end/2 - 999:end/2-1))));
+        mse(i,l) = mean(10*log10((x{1}(4999 - 999:4999))));
+        convergenceSample2(i,l) = find(10*log10(x{1}(aux:4999)) < mse(i,l),1,'first');
                  
         hold on
 
@@ -112,9 +205,108 @@ for i = 1:size(e4,1)
     H = legend('PAPA Volterra','SM-PAPA Volterra','Modified BEACON');
     set(H,'interpreter','latex')
     ylim([-20 10]);
-    formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-07' filesep num2str(i)],'en' , figProp );
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-07' filesep num2str(i)],'en' , figProp );
     
 end
+
+
+close all;
+
+
+fileVector = [41 42 43 44 45 46 47 48];
+
+
+for l = 1:length(fileVector)
+    
+    load(['results' num2str(fileVector(l)) '.mat']);
+    for i = 1:size(e4,1)
+        for j = 1:size(e4,2)
+            
+            if fileVector(l) == 41 || fileVector(l) == 45
+                x = meanCount2{i};
+            else
+                x = meanCount2{i,j};
+            end
+            aux = find(x{1},1);
+                
+            updates(i,j) = mean(x{1}(4999 - 999:4999))*100;
+%             convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) < y(i,j),1,'first');
+%                 
+        end
+    end
+
+    minAxis2(l) = min(min(updates));
+    
+    maxAxis2(l) = max(max(updates(updates~=0)));
+    
+ 
+    
+    
+    
+end
+
+
+
+
+
+
+
+fileVector = [41 42 43 44 45 46 47 48];
+
+
+for l = 1:length(fileVector)
+    
+    load(['results' num2str(fileVector(l)) '.mat']);
+    for i = 1:size(e4,1)
+        for j = 1:size(e4,2)
+            
+            if fileVector(l) == 41 || fileVector(l) == 45
+                x = meanCount2{i};
+            else
+                x = meanCount2{i,j};
+            end
+            aux = find(x{1},1);
+                
+            updates(i,j) = mean(x{1}(4999 - 999:4999))*100;
+%             convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) < y(i,j),1,'first');
+%                 
+        end
+    end
+
+    figure
+    colormap(jet)
+    imagesc(updates)
+    c = colorbar;
+    ylabel(c,'Rate of Updates','interpreter','latex')
+    set(c,'ylim',[0 100]);
+    set(c,'ytick',0:10:100);
+    caxis manual
+    caxis([min(minAxis2) max(maxAxis2)]);
+
+    xlabel('$N_{\mathrm{FB}}$','interpreter','latex');
+    ylabel('$N_{\mathrm{FF}}$','interpreter','latex');
+    set(gca,'ytick',1:5);
+
+    ylim([1 5])
+    formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-07' filesep 'update'  num2str(fileVector(l))],'en' , figProp );
+    
+    
+    
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
