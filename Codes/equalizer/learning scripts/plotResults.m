@@ -28,9 +28,10 @@ auxIndex = 1;
 
 
 
-for l = 1:length(fileVector)
+for l = 3:length(fileVector)
     
     load(['results' num2str(fileVector(l)) '.mat']);
+    convergenceSample2 = zeros(size(e4,1),size(e4,2));
     for i = 1:size(e4,1)
         for j = 1:size(e4,2)
             
@@ -42,23 +43,46 @@ for l = 1:length(fileVector)
 %             for k = 1:size(x,1)
 %                 figure
                 aux = find(x{1},1);
-% 
+                figure
+                xAux = 10*log10(x{1}(aux:4999));
+                xAux2 = flipud(10*log10(x{1}(aux:4999)));
                 plot(10*log10((x{1}(aux:end))))
                 
                 y(i,j) = mean(10*log10((x{1}(4999 - 999:4999))));
+                stdMse(i,j) = std(10*log10((x{1}(4999 - 999:4999))));
                 convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) < y(i,j),1,'first');
-%                 treta(i,j,:) = diff(10*log10(x{1}(aux:4999)));
-%                 convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) > y(i,j) + 0.2*abs(y(i,j)),1,'last');
-%                  H = legend('$N = 1$','$N = 2$','$N = 3$','$N = 4$','$N = 5$');
-%                 set(H,'interpreter','latex')
-%                 ylim([-25 20]);
-%                 hold on
-    
-%                 xlim([0 10000]);
-% %                 formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-09' filesep 'msePAPA_Volterra'],'en' , figProp );
-%                  title([num2str(l) 'N_{FF} = ' num2str(i) ', N_{FB} = ' num2str(j)])
-%             end
-%             close all;
+%                 convergenceSample2(i,j) = find(10*log10(x{1}(aux+1:4999)) < y(i,j)- 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); %nao funcionou por causa de undershoot
+                
+                convergenceSample2(i,j) = find(10*log10(x{1}(aux+1:4999)) < y(i,j)+ 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); % funciona com  algumas ressalvas
+                
+                convergenceSample2(i,j) = find(xAux2 > y(i,j) +3.3*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); % funciona com  algumas ressalvas
+                
+                
+                
+%                 [~,minIdx] = min(xAux);
+%                 while minIdx < convergenceSample2(i,j)
+%                     convergenceSample2(i,j) = find(10*log10(x{1}(minIdx:4999)) < y(i,j)- 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first');
+%                 end
+                    
+                
+                treta = diff(convergenceSample2Aux);
+                    treta = treta(treta>0);
+                
+                idx = 0;
+                index = 1;
+                
+                while ~idx % nao funciona
+                    x = median(xAux((i:100+index-1)));
+                    index = index+1;
+                    if x < y(i,j) || index == 4999 - 1000;
+                        idx = 1;
+                    end
+                end
+
+               
+                    
+                
+
         end
     end
 %     figure
@@ -83,9 +107,9 @@ for l = 1:length(fileVector)
     maxAxis(l) = max(max(y(y~=0)));
     
     
-    minAxisConv(l) = min(min(convergenceSample));
+    minAxisConv(l) = min(min(convergenceSample2));
     
-    maxAxisConv(l) = max(max(convergenceSample(y~=0)));
+    maxAxisConv(l) = max(max(convergenceSample2(convergenceSample2~=0)));
     
     
     
@@ -115,7 +139,9 @@ for l = 1:length(fileVector)
 %                 plot(10*log10((x{1}(aux:end))))
                 
                 y(i,j) = mean(10*log10((x{1}(4999 - 999:4999))));
+                stdMse(i,j) = std(10*log10((x{1}(4999 - 999:4999))));
                 convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) < y(i,j),1,'first');
+                convergenceSample2(i,j) = find(10*log10(x{1}(aux+1:4999)) < y(i,j) + 2*stdMse(i,j),1,'first');
 %                 treta(i,j,:) = diff(10*log10(x{1}(aux:4999)));
 %                 convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) > y(i,j) + 0.2*abs(y(i,j)),1,'last');
 %                  H = legend('$N = 1$','$N = 2$','$N = 3$','$N = 4$','$N = 5$');
@@ -130,28 +156,28 @@ for l = 1:length(fileVector)
 %             close all;
         end
     end
-    figure
-    colormap(jet)
-    imagesc(y)
-    c = colorbar;
-    ylabel(c,'[dB]','interpreter','latex')
-    set(c,'ylim',[-25 10]);
-    set(c,'ytick',-25:5:10);
-    caxis manual
-    caxis([floor(min(minAxis)) ceil(max(maxAxis))]);
-
-    xlabel('$N_{\mathrm{FB}}$','interpreter','latex');
-    ylabel('$N_{\mathrm{FF}}$','interpreter','latex');
-    set(gca,'ytick',1:5);
-
-    ylim([1 5])
+%     figure
+%     colormap(jet)
+%     imagesc(y)
+%     c = colorbar;
+%     ylabel(c,'[dB]','interpreter','latex')
+%     set(c,'ylim',[-25 10]);
+%     set(c,'ytick',-25:5:10);
+%     caxis manual
+%     caxis([floor(min(minAxis)) ceil(max(maxAxis))]);
+% 
+%     xlabel('$N_{\mathrm{FB}}$','interpreter','latex');
+%     ylabel('$N_{\mathrm{FF}}$','interpreter','latex');
+%     set(gca,'ytick',1:5);
+% 
+%     ylim([1 5])
 %     formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-07' filesep 'mse'  num2str(fileVector(l))],'en' , figProp );
 
 
 
     figure
     colormap(jet)
-    imagesc(convergenceSample)
+    imagesc(convergenceSample2)
     c = colorbar;
     ylabel(c,'Iterations until Convergence','interpreter','latex')
 %     set(c,'ylim',[-25 10]);

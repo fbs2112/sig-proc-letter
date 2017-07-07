@@ -47,7 +47,7 @@ for NIndex = 1:length(N)
 
             input = randi([0,numberOfSymbols-1],globalLength,1);
 
-            pilot = qammod(input,numberOfSymbols,0,'gray');
+            pilot = pammod(input,numberOfSymbols,0,'gray');
 
             pilot = pilot.*sqrt(signalPower/var(pilot));
 
