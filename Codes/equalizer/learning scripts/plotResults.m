@@ -65,8 +65,8 @@ for l = 3:length(fileVector)
 %                 end
                     
                 
-                treta = diff(convergenceSample2Aux);
-                    treta = treta(treta>0);
+%                 treta = diff(convergenceSample2Aux);
+%                     treta = treta(treta>0);
                 
                 idx = 0;
                 index = 1;
