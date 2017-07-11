@@ -34,7 +34,7 @@ for NIndex = 5:5%length(N)
     for delay = 1:length(delayVector)
 
 
-        globalLength = maxRuns + adapFiltLength(NIndex) + max(delayVector2) - 1;
+        globalLength = maxRuns + adapFiltLength(NIndex) + max(delayVector2) - 1 + 1;
 
         wIndex = zeros(adapFiltLength(NIndex),globalLength,maxIt);
         e2 = zeros(globalLength,maxIt);
@@ -48,10 +48,14 @@ for NIndex = 5:5%length(N)
             G = zeros(adapFiltLength(NIndex),adapFiltLength(NIndex),globalLength);
 
             x = zeros(N(NIndex),globalLength);
+            
+            binaryInputData = randi([0,1],globalLength,1);
+            binaryInputData = reshape(binaryInputData,[],numberOfBits);
+            deciInputData = bi2de(binaryInputData);
 
-            input = randi([0,numberOfSymbols-1],globalLength,1);
+%             input = randi([0,numberOfSymbols-1],globalLength,1);
 
-            pilot = pammod(input,numberOfSymbols,0,'gray');
+            pilot = pammod(deciInputData,numberOfSymbols,0,'gray');
 
             pilot2 = pilot.*sqrt(signalPower/var(pilot));
 
@@ -112,6 +116,7 @@ for NIndex = 5:5%length(N)
                 xAP = [x(:,k);xTDLAux];
 
                 d(k) = (pilot(-delayVector(delay) + k + 1)); 
+                
 
                 e(k) = d(k) - w(:,k)'*xAP(:,1);
 

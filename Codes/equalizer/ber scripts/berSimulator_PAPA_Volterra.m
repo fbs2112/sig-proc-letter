@@ -15,16 +15,24 @@ addpath(['..' filesep 'simParameters']);
 
 load paramEq.mat;
 load param_feedforwardEq.mat;
-load results37.mat;
+% load results41.mat;
+load teste.mat
 
-SNR = 30;
+SNR = inf;
 % ber = zeros(size(w4,1),length(SNR));
 
+% h(:,1) = [1 0 0 0 0 0 0 0 0].';
+% h(:,2) = [1 0 0 0 0 0 0 0 0].';
+% 
 for SNRIndex = 1:length(SNR)
-    for NIndex = 3:3%size(w4,1)
+    for NIndex = 5:5%size(w4,1)
         equalyzerFilter = [];
         berAux = zeros(monteCarloLoops,1);
-        equalyzerFilter(:,1) = squeeze(w4{NIndex}{1}(:,4999));
+        equalyzerFilter(:,1) = squeeze(w4{NIndex}{1}(:,4996));
+%         equalyzerFilter(:,1) = zeros(20,1);
+%         equalyzerFilter(1,:) = 1;
+%         equalyzerFilter(:,1) = squeeze(w(:,4996));
+        
 %         equalyzerFilter(:,1) = squeeze(w3{1}(:,4998));
 %         equalyzerFilter(:,2) = squeeze(w4{NIndex}{1}(:,end));
 
@@ -36,20 +44,24 @@ for SNRIndex = 1:length(SNR)
             binaryInputData = reshape(binaryInputData,[],numberOfBits);
             deciInputData = bi2de(binaryInputData);    
             pilot = pammod(deciInputData,2^numberOfBits,0,'gray');
+            pilotVar = var(pilot);
             pilot = pilot.*sqrt(signalPower/var(pilot));
 
+            pilotAux = pilot;
+%             pilotAux = [zeros(memoryChannelLength-1,1);pilot];
             xAux = zeros(length(pilot),size(h,2));
-
             for channelIndex = 1:size(h,2)
+                
                 aux2 = zeros(length(l1Pilot),1);
                 xAux2 = zeros(length(pilot),1);
 
-                for i = memoryChannelLength:length(pilot) %Channel 1
-                   xPilot = (pilot(i:-1:i-memoryChannelLength+1));
+                for i = memoryChannelLength:length(pilotAux) %Channel 1
+                   xPilot = (pilotAux(i:-1:i-memoryChannelLength+1));
                    for lIndex = 1:length(l1Pilot)
                       aux2(lIndex,1) = xPilot(l1Pilot(lIndex),1)*(xPilot(l2Pilot(lIndex),1));
                    end
                    xConc = [xPilot;(aux2)];
+%                    xAux2(i - memoryChannelLength + 1,1) = xConc.'*h(:,channelIndex);
                    xAux2(i,1) = xConc.'*h(:,channelIndex);
                 end
 
@@ -60,6 +72,8 @@ for SNRIndex = 1:length(SNR)
                 n = n.*sqrt(powerNoise/powerNoiseAux);
 
                 xAux(:,channelIndex) = xAux2 + n;
+%                 xAux(:,channelIndex) = xAux(:,channelIndex)*sqrt(pilotVar/var(xAux(:,channelIndex)));
+                
 
             end
 
@@ -67,7 +81,7 @@ for SNRIndex = 1:length(SNR)
 
             xAux = [zeros(N(NIndex)-1,2);xAux];
     
-            for k = N(NIndex):length(pilot)
+            for k = N(NIndex):length(pilot) 
                 
                 
                 if k >= changingIteration
@@ -96,6 +110,8 @@ for SNRIndex = 1:length(SNR)
 
             decDemodSignal = pamdemod(equalyzedSignal,pamOrder,0,'gray');
 
+%             decDemodSignal = pamdemod(pilot,pamOrder,0,'gray');
+%             delay = 0;
             binaryOutputData = de2bi(decDemodSignal,numberOfBits);
 
             berAux(index) = sum(sum(abs(binaryOutputData(delay+1:(blockLength/2) + delay,:) - binaryInputData(1:(blockLength/2),:))))./blockLength;
