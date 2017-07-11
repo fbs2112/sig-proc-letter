@@ -10,7 +10,7 @@ addpath(['..' filesep 'berParameters']);
 addpath(['..' filesep 'simParameters']);
 load paramEq.mat;
 load param_feedforwardEq.mat;
-load results37.mat;
+load results41.mat;
 
 changingIteration = (blockLength + 100)/2;
 
@@ -108,7 +108,7 @@ for SNRIndex = 1:length(SNR)
 end
 
 
-save(['.' filesep 'results' filesep 'resultsBER01.mat'],'SNR','ber');
+save(['.' filesep 'results' filesep 'resultsBER05.mat'],'SNR','ber');
 
 rmpath(['..' filesep 'berParameters']);
 rmpath(['..' filesep 'learning scripts' filesep 'results']);

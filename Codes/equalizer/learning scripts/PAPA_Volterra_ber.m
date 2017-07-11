@@ -53,9 +53,9 @@ for NIndex = 5:5%length(N)
             binaryInputData = reshape(binaryInputData,[],numberOfBits);
             deciInputData = bi2de(binaryInputData);
 
-%             input = randi([0,numberOfSymbols-1],globalLength,1);
+            input = randi([0,numberOfSymbols-1],globalLength,1);
 
-            pilot = pammod(deciInputData,numberOfSymbols,0,'gray');
+            pilot = pammod(input,numberOfSymbols,0,'gray');
 
             pilot2 = pilot.*sqrt(signalPower/var(pilot));
 
@@ -106,7 +106,8 @@ for NIndex = 5:5%length(N)
                 end
 
                 x(:,k) = xAux(k:-1:k-N(NIndex)+1,channelIndex);
-
+                
+                xInput = pilot2(k:-1:k-N(NIndex)+1);
                 xTDLAux = zeros(length(l1{NIndex}),1);
 
                 for lIndex = 1:length(l1{NIndex})
@@ -117,7 +118,9 @@ for NIndex = 5:5%length(N)
 
                 d(k) = (pilot(-delayVector(delay) + k + 1)); 
                 
-
+                y(k) = w(:,k)'*xAP(:,1);
+                
+                ber(k) = sum(abs(de2bi(pamdemod(y(k),pamOrder,0,'gray'),numberOfBits) - de2bi(pamdemod(xInput(1),pamOrder,0,'gray'),numberOfBits)));
                 e(k) = d(k) - w(:,k)'*xAP(:,1);
 
 

@@ -24,20 +24,56 @@ for l = 1:size(e3,2)
     aux = find(e3{l},1);
     plot(10*log10((e3{l}(aux:end))))
     hold on;
+    meanMSE(1) = mean(10*log10((e3{l}(999 - 499:999))));
+    stdMse(1) = std(10*log10((e3{l}(999 - 499:999))));
+    
+end
+convergenceSample(1) = find(10*log10(e3{l}(aux:999)) < meanMSE(1) + 2*stdMse(1)*sign(2*stdMse(1)),1,'first');
+
+
+
+
+load results02.mat;
+
+for l = 1:size(e3,2)
+    aux = find(e3{l},1);
+    plot(10*log10((e3{l}(aux:end))))
+    hold on;
+    meanMSE(2) = mean(10*log10((e3{l}(999 - 499:999))));
+    stdMse(2) = std(10*log10((e3{l}(999 - 499:999))));
+end
+convergenceSample(2) = find(10*log10(e3{l}(aux:999)) < meanMSE(2) + 2*stdMse(2)*sign(2*stdMse(2)),1,'first');
+
+
+load results03.mat;
+
+for l = 1:size(e3,2)
+    aux = find(e3(:,l),1);
+    plot(10*log10((e3(aux:end,l))))
+    hold on;
+    
+    meanMSE(3) = mean(10*log10((e3(999 - 499:999))));
+    stdMse(3) = std(10*log10((e3(999 - 499:999))));
 end
 
-xlabel('Iterations','interpreter','latex');
-ylabel('MSE (dB)','interpreter','latex');
+convergenceSample(3) = find(10*log10(e3(aux:999)) < meanMSE(3) + 2*stdMse(3)*sign(2*stdMse(3)),1,'first');
 
-% H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-% set(H,'interpreter','latex')
+
+xlabel('Iterations','interpreter','latex');
+ylabel('MSE [dB]','interpreter','latex');
+
+H = legend('PNLMS','SM-PNLMS','Modified BEACON');
+set(H,'interpreter','latex')
 xlim([0 2000])
 ylim([-35 15])
 
-% formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'msePAPA_NLMS'],'en' , figProp );
+
+formatFig( gcf ,['.' filesep 'figs' filesep 'mseEq'],'en' , figProp );
 
 
 figure
+
+load results01.mat;
 
 for l = 1:size(misalignment,2)
     aux = find(misalignment{l},1);
@@ -45,27 +81,39 @@ for l = 1:size(misalignment,2)
     hold on;
 end
 
-xlabel('Iterations','interpreter','latex');
-ylabel('Misalignment (dB)','interpreter','latex');
-
-% H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-% set(H,'interpreter','latex')
-xlim([0 2000])
-ylim([-60 10])
-
-% formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'misPAPA_NLMS'],'en' , figProp );
-
 load results02.mat;
-figure
 
-for l = 1:size(e3,2)
-    aux = find(e3{l},1);
-    plot(10*log10((e3{l}(aux:end))))
+for l = 1:size(misalignment,2)
+    aux = find(misalignment{l},1);
+    plot(10*log10((misalignment{l}(aux:end))))
+    hold on;
+end
+
+load results03.mat;
+
+for l = 1:size(misalignment,2)
+    aux = find(misalignment,1);
+    plot(10*log10((misalignment(aux:end))))
     hold on;
 end
 
 xlabel('Iterations','interpreter','latex');
-ylabel('MSE (dB)','interpreter','latex');
+ylabel('Misalignment [dB]','interpreter','latex');
+
+H = legend('PNLMS','SM-PNLMS','Modified BEACON');
+set(H,'interpreter','latex')
+xlim([0 2000])
+ylim([-60 10])
+
+formatFig( gcf ,['.' filesep 'figs' filesep 'misEq'],'en' , figProp );
+
+
+load results02.mat;
+
+
+
+
+
 
 % H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
 % set(H,'interpreter','latex')
@@ -103,14 +151,7 @@ ylim([-60 10])
 % formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'misSMPAPA_NLMS'],'en' , figProp );
 
 
-load results03.mat;
-figure
 
-for l = 1:size(e3,2)
-    aux = find(e3(:,l),1);
-    plot(10*log10((e3(aux:end,l))))
-    hold on;
-end
 
 xlabel('Iterations','interpreter','latex');
 ylabel('MSE (dB)','interpreter','latex');

@@ -9,9 +9,9 @@ addpath(['..' filesep 'learning scripts' filesep 'results']);
 addpath(['..' filesep 'berParameters']);
 addpath(['..' filesep 'simParameters']);
 
-load paramDFE_FF_FB.mat;
+load paramDFE_FF.mat;
 load param_feedforwardEq.mat;
-load results38.mat;
+load results47.mat;
 
 ber = zeros(size(w4,1),size(w4,2),length(SNR));
 
@@ -71,7 +71,6 @@ for SNRIndex = 1:length(SNR)
 
 
                 for k = feedforwardLength(FFIndex) + feedbackLength(FBIndex) + 1:length(pilot) 
-
 
                     if k >= changingIteration
 
@@ -136,7 +135,7 @@ for SNRIndex = 1:length(SNR)
 end
 
 
-save(['.' filesep 'results' filesep 'resultsBER02.mat'],'SNR','ber');
+save(['.' filesep 'results' filesep 'resultsBER11.mat'],'SNR','ber');
 
 rmpath(['..' filesep 'berParameters']);
 rmpath(['..' filesep 'learning scripts' filesep 'results']);
