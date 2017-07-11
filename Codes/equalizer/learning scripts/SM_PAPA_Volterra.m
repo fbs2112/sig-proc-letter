@@ -55,7 +55,7 @@ for NIndex = 1:length(N)
 
             pilot = pammod(input,pamOrder,0,'gray');
 
-            pilot = pilot.*sqrt(signalPower/var(pilot));
+            pilot2 = pilot.*sqrt(signalPower/var(pilot));
 
 
             xAux = zeros(length(pilot),size(h,2));
@@ -65,7 +65,7 @@ for NIndex = 1:length(N)
                 xAux2 = zeros(length(pilot),1);
 
                 for i = memoryChannelLength:length(pilot) %Channel 1
-                   xPilot = (pilot(i:-1:i-memoryChannelLength+1));
+                   xPilot = (pilot2(i:-1:i-memoryChannelLength+1));
                    for lIndex = 1:length(l1Pilot)
                       aux2(lIndex,1) = xPilot(l1Pilot(lIndex),1)*(xPilot(l2Pilot(lIndex),1));
                    end

@@ -62,7 +62,7 @@ for FFIndex = 1:length(feedforwardLength)
                 input = randi([0,numberOfSymbols-1],globalLength,1);
                 pilot = pammod(input,pamOrder,0,'gray');
 
-                pilot = pilot.*sqrt(signalPower/var(pilot));
+                pilot2 = pilot.*sqrt(signalPower/var(pilot));
 
                 xAux = zeros(length(pilot),size(h,2));
 
@@ -71,7 +71,7 @@ for FFIndex = 1:length(feedforwardLength)
                     xAux2 = zeros(length(pilot),1);
 
                     for i = memoryChannelLength:length(pilot) %Channel 1
-                       xPilot = (pilot(i:-1:i-memoryChannelLength+1));
+                       xPilot = (pilot2(i:-1:i-memoryChannelLength+1));
                        for lIndex = 1:length(l1Pilot)
                           aux2(lIndex,1) = xPilot(l1Pilot(lIndex),1)*(xPilot(l2Pilot(lIndex),1));
                        end

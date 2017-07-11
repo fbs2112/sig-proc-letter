@@ -21,7 +21,7 @@ w4 = cell(length(N),1);
 % h(:,2) = [1 0 0 0 0 0 0 0 0].';
 
 
-for NIndex = 5:5%length(N)
+for NIndex = 1:length(N)
     NIndex
     
     delayVector = N(NIndex)+1;%adapFiltLength + 10;
@@ -135,9 +135,9 @@ for NIndex = 5:5%length(N)
     
 end
 
-% save(['.' filesep 'results' filesep 'results37.mat'],'w4','e4');
+save(['.' filesep 'results' filesep 'results37.mat'],'w4','e4');
 
-save(['.' filesep 'results' filesep 'teste.mat'],'w4','e4');
+% save(['.' filesep 'results' filesep 'teste.mat'],'w4','e4');
 
 
 rmpath(['..' filesep 'simParameters' filesep]);

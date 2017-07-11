@@ -112,10 +112,10 @@ for SNRIndex = 1:length(SNR)
                     else
                         xConc = x(:,k);
                    end
-                  outputFF(k) =  (equalyzerFilter(1:adaptfiltFF))'*xConc;
+                  outputFF(k) =  (equalyzerFilter(1:adaptfiltFF(FFIndex)))'*xConc;
                   equalyzedSignal(k,1) = pamHardThreshold(outputFF(k) + outputFB(k-1)); %MEXER AQUI
 
-                  inputFB = equalyzedSignal(k:-1:k-feedbackLength + 1); 
+                  inputFB = equalyzedSignal(k:-1:k-feedbackLength(FBIndex) + 1); 
 
                     if volterraFBFlag
                         aux = zeros((feedbackLength(FBIndex)^2+feedbackLength(FBIndex))/2,1);
@@ -132,7 +132,7 @@ for SNRIndex = 1:length(SNR)
                         xConc = x(:,k);
                         yHatConc = inputFB;
                     end
-                    outputFB(k) = (equalyzerFilter(adaptfiltFF+1:end))'*yHatConc;
+                    outputFB(k) = (equalyzerFilter(adaptfiltFF(FFIndex)+1:end))'*yHatConc;
 
 
                 end
@@ -149,7 +149,7 @@ for SNRIndex = 1:length(SNR)
                 berAux(index) = sum(sum(abs(binaryOutputData(delay+1:(blockLength/2) + delay,:) - binaryInputData(1:(blockLength/2),:))))./blockLength;
             end
 
-            ber(NIndex,SNRIndex) = mean(berAux);
+            ber(FFIndex,FBIndex,SNRIndex) = mean(berAux);
         end
    end
 end
