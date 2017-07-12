@@ -80,7 +80,7 @@ for SNRIndex = 1:length(SNR)
                         channelIndex = 1;
                     end
 
-                    x(:,k) = xAux(k:-1:k-feedforwardLength(FFIndex)+1,channelIndex);
+                    x = xAux(k:-1:k-feedforwardLength(FFIndex)+1,channelIndex);
 
 %                     yHat(:,k) = (pilot(-delayVector(delay) + k + 1 -1:-1:-delayVector(delay) + k + 1 - feedbackLength(FBIndex) - 1 + 1));
 
@@ -89,11 +89,11 @@ for SNRIndex = 1:length(SNR)
                         aux = zeros((feedforwardLength(FFIndex)^2+feedforwardLength(FFIndex))/2,1);
 
                         for lIndex = 1:length(l1FF{FFIndex})
-                            aux(lIndex,1) = x(l1FF{FFIndex}(lIndex),k)*(x(l2FF{FFIndex}(lIndex),k));
+                            aux(lIndex,1) = x(l1FF{FFIndex}(lIndex),1)*(x(l2FF{FFIndex}(lIndex),1));
                         end
-                        xConc = [x(:,k);aux];
+                        xConc = [x(:,1);aux];
                     else
-                        xConc = x(:,k);
+                        xConc = x(:,1);
                    end
                   outputFF(k) =  (equalyzerFilter(1:adaptfiltFF(FFIndex),channelIndex))'*xConc;
                   equalyzedSignal(k,1) = pamHardThreshold(outputFF(k) + outputFB(k-1)); 
@@ -112,7 +112,7 @@ for SNRIndex = 1:length(SNR)
                     end
 
                     if ~volterraFFFlag && ~volterraFBFlag 
-                        xConc = x(:,k);
+                        xConc = x(:,1);
                         yHatConc = inputFB;
                     end
                     outputFB(k) = (equalyzerFilter(adaptfiltFF(FFIndex)+1:end,channelIndex))'*yHatConc;
@@ -136,7 +136,7 @@ for SNRIndex = 1:length(SNR)
 end
 
 
-save(['.' filesep 'results' filesep 'resultsBER02.mat'],'SNR','ber');
+% save(['.' filesep 'results' filesep 'resultsBER02.mat'],'SNR','ber');
 
 rmpath(['..' filesep 'berParameters']);
 rmpath(['..' filesep 'learning scripts' filesep 'results']);

@@ -4,7 +4,7 @@ close all;
 
 
 
-numberOfSymbols = 40000;
+numberOfSymbols = 10000;
 numberOfBits = 2;
 blockLength = numberOfSymbols*numberOfBits;
 monteCarloLoops = 1000;
