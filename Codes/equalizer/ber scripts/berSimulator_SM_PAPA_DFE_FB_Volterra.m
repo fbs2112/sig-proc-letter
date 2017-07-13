@@ -73,12 +73,12 @@ for SNRIndex = 1:length(SNR)
                 for k = feedforwardLength(FFIndex) + feedbackLength(FBIndex) + 1:length(pilot)  
 
 
-                    if k >= changingIteration
-
-                        channelIndex = 2;
-                    else
-                        channelIndex = 1;
-                    end
+%                     if k >= changingIteration
+% 
+%                         channelIndex = 2;
+%                     else
+%                         channelIndex = 1;
+%                     end
 
                     x = xAux(k:-1:k-feedforwardLength(FFIndex)+1,channelIndex);
 

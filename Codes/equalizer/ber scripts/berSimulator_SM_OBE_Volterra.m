@@ -73,12 +73,12 @@ for SNRIndex = 1:length(SNR)
             for k = N(NIndex):length(pilot) 
                 
                 
-                if k >= changingIteration
-                    
-                    channelIndex = 2;
-                else
-                    channelIndex = 1;
-                end
+%                 if k >= changingIteration
+%                     
+%                     channelIndex = 2;
+%                 else
+%                     channelIndex = 1;
+%                 end
                 
                 x = xAux(k:-1:k-N(NIndex)+1,channelIndex);
 
