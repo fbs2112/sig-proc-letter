@@ -59,7 +59,7 @@ end
 convergenceSample(3) = find(10*log10(e3(aux:999)) < meanMSE(3) + 2*stdMse(3)*sign(2*stdMse(3)),1,'first');
 
 
-xlabel('Iterations','interpreter','latex');
+xlabel('Iterations [$k$]','interpreter','latex');
 ylabel('MSE [dB]','interpreter','latex');
 
 H = legend('V-PNLMS','VSM-PNLMS','VM-BEACON');
@@ -97,7 +97,7 @@ for l = 1:size(misalignment,2)
     hold on;
 end
 
-xlabel('Iterations','interpreter','latex');
+xlabel('Iterations [$k$]','interpreter','latex');
 ylabel('Misalignment [dB]','interpreter','latex');
 
 H = legend('V-PNLMS','VSM-PNLMS','VM-BEACON');
