@@ -21,3 +21,12 @@ resultsBER10: resultados para SM-OBE DFE FF e FB com 1000 loops de montecarlo co
 resultsBER11: resultados para SM-OBE DFE FF com 1000 loops de montecarlo com canal 2 modificado;
 
 resultsBER12: resultados para SM-OBE DFE FB com 1000 loops de montecarlo com canal 2 modificado; 
+
+
+resultsBER13: resultados para RLS Volterra com 1000 loops de montecarlo com canal 2 modificado;
+
+resultsBER14: resultados para RLS DFE FF e FB com 1000 loops de montecarlo com canal 2 modificado;
+
+resultsBER15: resultados para RLS DFE FF com 1000 loops de montecarlo com canal 2 modificado;
+
+resultsBER16: resultados para RLS DFE FB com 1000 loops de montecarlo com canal 2 modificado; 
