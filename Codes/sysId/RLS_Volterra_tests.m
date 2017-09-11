@@ -10,7 +10,7 @@ load param01.mat;
 inputType = 'white';
 
 lambda = 0.95;
-% maxIt = 20;
+maxIt = 20;
 globalLength = maxRuns + N - 1;
 
 misalignmentAux = zeros(globalLength,maxIt);
@@ -82,7 +82,7 @@ e3 = mean(e2,2);
 
 misalignment = mean(misalignmentAux,2);
 
-% save(['.' filesep 'results' filesep 'results04.mat'],'w3','e3','misalignment');
+save(['.' filesep 'results' filesep 'RLS.mat'],'w3','e3','misalignment');
 
 rmpath(['.' filesep 'simParameters' filesep]);
 

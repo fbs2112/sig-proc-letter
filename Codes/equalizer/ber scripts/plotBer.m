@@ -13,7 +13,7 @@ fontsize = 24;
 figProp = struct( 'size' , 24 , 'font' ,fontname , 'lineWidth' , linewidth, 'figDim', [1 1 800 600]);
 
 
-fileVector = [1 5 9];
+fileVector = [1 5 13 9];
 
 
 
@@ -23,12 +23,16 @@ for i = 4:5
     
     for j = 1:length(fileVector)
 
-        load (['resultsBER0' num2str(fileVector(j)) '.mat']);
+        if fileVector(j) < 10
+            load (['resultsBER0' num2str(fileVector(j)) '.mat']);
+        else
+            load (['resultsBER' num2str(fileVector(j)) '.mat']);
+        end
 
         semilogy(SNR,squeeze(ber(i,:)))
         hold on;
     end
-    H = legend('V-PNLMS','VSM-PNLMS','VM-BEACON');
+    H = legend('V-PNLMS','VSM-PNLMS','V-RLS','VM-BEACON');
     set(H,'location','SouthWest');
     set(H,'interpreter','latex')
     
@@ -45,12 +49,12 @@ for i = 4:5
     end
         
     
-    formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-12' filesep 'berFF'  num2str(i)],'en' , figProp );
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-12' filesep 'berFF'  num2str(i)],'en' , figProp );
     
 end
 
 close all;
-fileVector = [3 7 11];
+fileVector = [3 7 15 11];
 
 figure
 
@@ -68,7 +72,7 @@ for i = 5:5
             semilogy(SNR,squeeze(ber(i,k,:)))
             hold on;
         end
-        H = legend('V-PNLMS','VSM-PNLMS','VM-BEACON');
+        H = legend('V-PNLMS','VSM-PNLMS','V-RLS','VM-BEACON');
         set(H,'location','SouthWest');
         set(H,'interpreter','latex')
 

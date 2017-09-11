@@ -9,13 +9,23 @@ addpath(['.' filesep 'simParameters' filesep]);
 load param01.mat;
 inputType = 'white';
 
+% wo = zeros(9,1);
+% 
+% wo([1 7]) = 0.3;
+
 lambda = 0.95;
-% maxIt = 20;
+maxIt = 20;
 globalLength = maxRuns + N - 1;
 
 misalignmentAux = zeros(globalLength,maxIt);
 wIndex = zeros(adapFiltLength,globalLength,maxIt);
 e2 = zeros(globalLength,maxIt);
+
+alpha = 0.05;
+beta = 5;
+GemanMcLureFun = @(w) beta*sign(w)./((1+beta*abs(w)).^2);
+
+count = zeros(globalLength,maxIt);
 
 for index = 1:maxIt
     index
@@ -25,6 +35,8 @@ for index = 1:maxIt
     Sd(:,:,N-1) = eye(adapFiltLength)*(1-lambda)*signalPower;
     psi = zeros(adapFiltLength,globalLength);
     e = zeros(globalLength,1);
+    
+    eyeM = eye(adapFiltLength);
     
     input = pammod(randi([0 pamOrder-1],globalLength,1),pamOrder,0,'gray');
     
@@ -37,7 +49,7 @@ for index = 1:maxIt
     n = randn(globalLength,1);
     n = n.*sqrt(noisePower/var(n));
 
-    w = zeros((N^2+N)/2 + N,globalLength);    
+    w = ones((N^2+N)/2 + N,globalLength);    
     
     xFlip = flipud(buffer(input,N,N-1));
     woIndex = 1;
@@ -61,12 +73,21 @@ for index = 1:maxIt
 
         e(k) = d(k) - w(:,k-1).'*xAP;
         
-        psi(:,k) = Sd(:,:,k-1)*xAP;
-       
-        Sd(:,:,k) = (1/lambda)*(Sd(:,:,k-1)-((psi(:,k)*psi(:,k).')/(lambda+psi(:,k).'*xAP)));
+        if abs(e(k)) > barGamma
         
-        w(:,k) = w(:,k-1) + conj(e(k))*Sd(:,:,k)*xAP;
-       
+            psi(:,k) = Sd(:,:,k-1)*xAP;
+
+            Sd(:,:,k) = (1/lambda)*(Sd(:,:,k-1)-((psi(:,k)*psi(:,k).')/(lambda+psi(:,k).'*xAP)));
+
+            w(:,k) = w(:,k-1) + Sd(:,:,k)*(xAP*conj(e(k)) - alpha/2*eyeM*(GemanMcLureFun(w(:,k-1)) - lambda*(GemanMcLureFun(w(:,k-1)))));
+            count(k,index) = 1;
+        else
+            psi(:,k) = psi(:,k-1);
+            
+            Sd(:,:,k) = Sd(:,:,k-1);
+            
+            w(:,k) = w(:,k-1);
+        end
        
         
         misalignmentAux(k,index) = norm(w(:,k) - wo(:,woIndex)).^2/(norm(wo(:,woIndex)).^2);
@@ -82,7 +103,9 @@ e3 = mean(e2,2);
 
 misalignment = mean(misalignmentAux,2);
 
-% save(['.' filesep 'results' filesep 'results04.mat'],'w3','e3','misalignment');
+meanCount = mean(count,2);
+
+save(['.' filesep 'results' filesep 'DSRLS.mat'],'w3','e3','misalignment','meanCount');
 
 rmpath(['.' filesep 'simParameters' filesep]);
 
