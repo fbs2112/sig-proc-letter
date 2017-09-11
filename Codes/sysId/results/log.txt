@@ -4,3 +4,5 @@ results02: resultados para SM-PAPA NLMS Volterra e dois canais do paper do Giann
 
 results03: resultados para SM-OBE Volterra e dois canais do paper do Giannakis;
 
+results04: resultados para Volterra RLS e dois canais do paper do Giannakis;
+

@@ -45,7 +45,7 @@ end
 convergenceSample(2) = find(10*log10(e3{l}(aux:999)) < meanMSE(2) + 2*stdMse(2)*sign(2*stdMse(2)),1,'first');
 
 
-load results03.mat;
+load results04.mat;
 
 for l = 1:size(e3,2)
     aux = find(e3(:,l),1);
@@ -58,11 +58,25 @@ end
 
 convergenceSample(3) = find(10*log10(e3(aux:999)) < meanMSE(3) + 2*stdMse(3)*sign(2*stdMse(3)),1,'first');
 
+load results03.mat;
+
+for l = 1:size(e3,2)
+    aux = find(e3(:,l),1);
+    plot(10*log10((e3(aux:end,l))))
+    hold on;
+    
+    meanMSE(4) = mean(10*log10((e3(999 - 499:999))));
+    stdMse(4) = std(10*log10((e3(999 - 499:999))));
+end
+
+convergenceSample(4) = find(10*log10(e3(aux:999)) < meanMSE(4) + 2*stdMse(4)*sign(2*stdMse(4)),1,'first');
+
+
 
 xlabel('Iterations [$k$]','interpreter','latex');
 ylabel('MSE [dB]','interpreter','latex');
 
-H = legend('V-PNLMS','VSM-PNLMS','VM-BEACON');
+H = legend('V-PNLMS','VSM-PNLMS','V-RLS','VM-BEACON');
 set(H,'interpreter','latex')
 xlim([0 2000])
 ylim([-35 15])
@@ -89,6 +103,16 @@ for l = 1:size(misalignment,2)
     hold on;
 end
 
+
+load results04.mat;
+
+for l = 1:size(misalignment,2)
+    aux = find(misalignment,1);
+    plot(10*log10((misalignment(aux:end))))
+    hold on;
+end
+
+
 load results03.mat;
 
 for l = 1:size(misalignment,2)
@@ -100,7 +124,7 @@ end
 xlabel('Iterations [$k$]','interpreter','latex');
 ylabel('Misalignment [dB]','interpreter','latex');
 
-H = legend('V-PNLMS','VSM-PNLMS','VM-BEACON');
+H = legend('V-PNLMS','VSM-PNLMS','V-RLS','VM-BEACON');
 set(H,'interpreter','latex')
 xlim([0 2000])
 ylim([-60 10])
