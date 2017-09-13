@@ -10,12 +10,14 @@ load param01.mat;
 inputType = 'white';
 
 lambda = 0.95;
-% maxIt = 20;
+maxIt = 20;
 globalLength = maxRuns + N - 1;
 
 misalignmentAux = zeros(globalLength,maxIt);
 wIndex = zeros(adapFiltLength,globalLength,maxIt);
 e2 = zeros(globalLength,maxIt);
+
+kappa = 0;
 
 for index = 1:maxIt
     index
@@ -25,6 +27,7 @@ for index = 1:maxIt
     Sd(:,:,N-1) = eye(adapFiltLength)*(1-lambda)*signalPower;
     psi = zeros(adapFiltLength,globalLength);
     e = zeros(globalLength,1);
+    G = zeros(adapFiltLength,adapFiltLength,globalLength);
     
     input = pammod(randi([0 pamOrder-1],globalLength,1),pamOrder,0,'gray');
     
@@ -37,7 +40,7 @@ for index = 1:maxIt
     n = randn(globalLength,1);
     n = n.*sqrt(noisePower/var(n));
 
-    w = zeros((N^2+N)/2 + N,globalLength);    
+    w = zeros((N^2+N)/2 + N,globalLength) + 1e-6;    
     
     xFlip = flipud(buffer(input,N,N-1));
     woIndex = 1;
@@ -64,11 +67,10 @@ for index = 1:maxIt
         psi(:,k) = Sd(:,:,k-1)*xAP;
        
         Sd(:,:,k) = (1/lambda)*(Sd(:,:,k-1)-((psi(:,k)*psi(:,k).')/(lambda+psi(:,k).'*xAP)));
+        G(:,:,k) = diag(((1 - kappa*lambda)/adapFiltLength) + (kappa*lambda*abs(w(:,k))/norm(w(:,k),1)));
         
-        w(:,k) = w(:,k-1) + conj(e(k))*Sd(:,:,k)*xAP;
-       
-       
-        
+        w(:,k) = w(:,k-1) + conj(e(k))*G(:,:,k)*Sd(:,:,k)*xAP;
+               
         misalignmentAux(k,index) = norm(w(:,k) - wo(:,woIndex)).^2/(norm(wo(:,woIndex)).^2);
         
     end

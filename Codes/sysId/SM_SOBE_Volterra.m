@@ -1,0 +1,113 @@
+%Volterra SM-OBE
+
+clear;
+clc;
+close all;
+
+addpath(['.' filesep 'simParameters' filesep]);
+
+load param01.mat;
+inputType = 'white';
+
+
+globalLength = maxRuns + N - 1;
+count = zeros(globalLength,maxIt);
+
+misalignmentAux = zeros(globalLength,maxIt);
+wIndex = zeros(adapFiltLength,globalLength,maxIt);
+e2 = zeros(globalLength,maxIt);
+
+alpha = 0.05;
+beta = 5;
+GemanMcLureFun = @(w) beta*sign(w)./((1+beta*abs(w)).^2);
+maxIt = 20;
+
+
+for index = 1:maxIt
+    index
+
+    d = zeros(globalLength,1);
+    P = zeros(adapFiltLength,adapFiltLength,maxIt);
+    P(:,:,N) = eye(adapFiltLength)*1e-6;
+    sigma = zeros(globalLength,1);
+    sigma(N) = 1;
+    delta = zeros(globalLength,1);
+    lambda = zeros(globalLength,1);
+    G = zeros(globalLength,1);
+    eyeM = eye(adapFiltLength);
+    input = pammod(randi([0 pamOrder-1],globalLength,1),pamOrder,0,'gray');
+    
+    if strcmp(inputType,'colored')
+       input = filter([1 0],[1 -0.9],input);
+    end
+    
+    input = input.*sqrt(signalPower/var(input));
+
+    n = randn(globalLength,1);
+    n = n.*sqrt(noisePower/var(n));
+
+    theta = zeros((N^2+N)/2 + N,globalLength);    
+    
+    xFlip = flipud(buffer(input,N,N-1));
+    woIndex = 1;
+    
+    for k = N:globalLength
+        
+        if k >= changingIteration
+            woIndex = 2;
+        end
+
+        
+        xTDLAux = zeros(adapFiltLength - N,1);
+        
+        for lIndex = 1:length(l1)
+            xTDLAux(lIndex,1) = xFlip(l1(lIndex),k)*xFlip(l2(lIndex),k);
+        end
+        
+        xAP = [xFlip(:,k);xTDLAux];
+        
+        d(k) = ((wo(:,woIndex).'*xAP)) + n(k);
+
+        delta(k) = d(k) - theta(:,k)'*xAP; %error
+       
+        
+        if abs(delta(k)) > barGamma
+            G(k) = xAP.'*P(:,:,k)*conj(xAP);
+            lambda(k) = (1/G(k))*((abs(delta(k))/barGamma) - 1);
+            lambda2 = 1/lambda(k);
+            
+            P(:,:,k+1) = lambda(k)*(P(:,:,k) - (P(:,:,k)*conj(xAP)*xAP.'*P(:,:,k))/(lambda2+G(k)));
+        
+%             theta(:,k+1) = theta(:,k) + P(:,:,k+1)*conj(xAP)*delta(k);
+            theta(:,k+1) = theta(:,k) + P(:,:,k+1)*(xAP*conj(delta(k)) - alpha/2*eyeM*(GemanMcLureFun(theta(:,k)) - lambda(k)*(GemanMcLureFun(theta(:,k)))));
+
+            sigma(k+1) = sigma(k) - (lambda(k)*delta(k)^2)/(1+lambda(k)*G(k)) + lambda2*delta(k)^2;
+            
+            count(k,index) = 1;
+        else
+            lambda(k) = 0;
+            P(:,:,k+1) = P(:,:,k);
+            theta(:,k+1) = theta(:,k);
+            sigma(k+1) = sigma(k);
+        end
+        
+        
+        misalignmentAux(k,index) = norm(theta(:,k+1) - wo(:,woIndex)).^2/(norm(wo(:,woIndex)).^2);
+        
+    end
+    wIndex(:,:,index) = (theta(:,1:globalLength));
+    e2(:,index) = abs(delta).^2;
+end
+
+meanCount = mean(count,2);
+
+w3 = mean(wIndex,3);
+
+e3 = mean(e2,2);
+
+misalignment = mean(misalignmentAux,2);
+
+save(['.' filesep 'results' filesep 'SOBE.mat'],'w3','e3','meanCount','misalignment');
+
+rmpath(['.' filesep 'simParameters' filesep]);
+
