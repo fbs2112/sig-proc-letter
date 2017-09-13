@@ -23,7 +23,7 @@ figProp = struct( 'size' , 24 , 'font' ,fontname , 'lineWidth' , linewidth, 'fig
 
 fileVector = {'testeWam' 'teste4'};
 
-fileVector = {'results01' 'results02'};
+fileVector = {'results1' 'results2'};
 
 
 for l = 1:length(fileVector)
@@ -68,7 +68,7 @@ set(H,'interpreter','latex')
 
 ylabel('MSE [dB]','interpreter','latex');
 xlabel('Iterations [$k$]','interpreter','latex');
-
+xlim([0 3000])
 
 
 
