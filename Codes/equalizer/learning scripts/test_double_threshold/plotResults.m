@@ -21,9 +21,7 @@ figProp = struct( 'size' , 24 , 'font' ,fontname , 'lineWidth' , linewidth, 'fig
 
 % fileVector = {'teste6' 'teste5' 'teste4' 'teste' 'teste2'};
 
-fileVector = {'testeWam' 'teste4'};
-
-fileVector = {'results1' 'results2'};
+fileVector = {'results3'};
 
 
 for l = 1:length(fileVector)

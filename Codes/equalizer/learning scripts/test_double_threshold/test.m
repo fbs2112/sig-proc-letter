@@ -23,13 +23,12 @@ delay = 1;
 
 barGammaLin = 4*sqrt(5*noisePower);
 
-
-barGammaNonLin = 1:0.5:4*barGammaLin;
+barGammaNonLin = (1:0.5:4)*barGammaLin;
 gamma = 1e-8;
 
 
 for barGammaNonLinIndex = 1:length(barGammaNonLin)
-    
+    barGammaNonLinIndex
     e3 = cell(length(L),length(barGammaNonLin));
     w3 = cell(length(L),length(barGammaNonLin));
     meanCountLin = cell(length(L),length(barGammaNonLin));
@@ -49,8 +48,7 @@ for barGammaNonLinIndex = 1:length(barGammaNonLin)
         e2 = zeros(globalLength,maxIt);
 
         for index = 1:maxIt
-            index
-
+            
             d = zeros(globalLength,1);
             e = zeros(globalLength,1);
             muLin = zeros(globalLength,1);
