@@ -5,9 +5,7 @@ close all;
 
 
 addpath(['.' filesep 'results']);
-addpath(['..' filesep 'simParameters' filesep]);
-addpath(['..' filesep '..' filesep]);
-addpath(['..' filesep '..' filesep 'sysId' filesep 'Utils' filesep]);
+addpath(['..' filesep '..' filesep '..' filesep 'sysId' filesep 'Utils' filesep]);
 
 
 
@@ -31,7 +29,7 @@ for l = 1:length(fileVector)
     for i = 1:size(e3,1)
         for j = 1:1%size(e4,2)
             
-                x = e3{i};
+                x = e3{i,j};
 %                 count = meanCount2{i,j};
                 
 %                 count{1} = zeros(10000,1);
@@ -678,7 +676,5 @@ end
 
 
 rmpath(['.' filesep 'results']);
-rmpath(['..' filesep 'simParameters' filesep]);
-rmpath(['..' filesep '..' filesep]);
-rmpath(['..' filesep '..' filesep 'sysId' filesep 'Utils' filesep]);
+rmpath(['..' filesep '..' filesep '..' filesep 'sysId' filesep 'Utils' filesep]);
 

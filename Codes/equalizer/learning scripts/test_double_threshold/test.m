@@ -26,14 +26,16 @@ barGammaLin = 4*sqrt(5*noisePower);
 barGammaNonLin = (1:0.5:4)*barGammaLin;
 gamma = 1e-8;
 
+e3 = cell(length(L),length(barGammaNonLin));
+w3 = cell(length(L),length(barGammaNonLin));
+meanCountLin = cell(length(L),length(barGammaNonLin));
+meanCountNonLin = cell(length(L),length(barGammaNonLin));
+meanCountTotal = cell(length(L),length(barGammaNonLin));
+
 
 for barGammaNonLinIndex = 1:length(barGammaNonLin)
     barGammaNonLinIndex
-    e3 = cell(length(L),length(barGammaNonLin));
-    w3 = cell(length(L),length(barGammaNonLin));
-    meanCountLin = cell(length(L),length(barGammaNonLin));
-    meanCountNonLin = cell(length(L),length(barGammaNonLin));
-    meanCountTotal = cell(length(L),length(barGammaNonLin));
+    
 
     for LIndex = 1:length(L)
 
