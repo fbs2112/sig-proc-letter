@@ -56,9 +56,13 @@ for barGammaNonLinIndex = 1:length(barGammaNonLin)
             muLin = zeros(globalLength,1);
             muNonLin = zeros(globalLength,1);
             G = zeros(adapFiltLength(N(5)),adapFiltLength(N(5)),globalLength);
+            
+            G1 = zeros(N(5),adapFiltLength(N(5)),globalLength);
+            
+            G2 = zeros(adapFiltLength(N(5)) - N(5),adapFiltLength(N(5)),globalLength);
 
             xFiltered = zeros(globalLength,1);
-            x = zeros(N(5),globalLength);
+            xLin = zeros(N(5),globalLength);
             input = randi([0,numberOfSymbols-1],globalLength,1);
 
             pilot = pammod(input,pamOrder,0,'gray');
@@ -91,23 +95,27 @@ for barGammaNonLinIndex = 1:length(barGammaNonLin)
             end
 
             w = zeros(adapFiltLength(NIndex),globalLength) + 1e-6;
+            
+            w1 = zeros(N(5),globalLength) + 1e-6;
+            w2 = zeros(adapFiltLength(NIndex) - N(5),globalLength) + 1e-6;
+
 
             channelIndex = 1;
 
             for k = (adapFiltLength(NIndex) + max(delayVector2)):globalLength
 
-                x(:,k) = xAux(k:-1:k-N(NIndex)+1,channelIndex);
+                xLin(:,k) = xAux(k:-1:k-N(NIndex)+1,channelIndex);
 
 
                 xAP = zeros(adapFiltLength(NIndex),L(LIndex)+1);
 
                 for windowIndex = 1:L(LIndex)+1
-                    xTDLAux = zeros(length(l1{NIndex}),1);
+                    xNonLin = zeros(length(l1{NIndex}),1);
 
                     for lIndex = 1:length(l1{NIndex})
-                        xTDLAux(lIndex,1) = x(l1{NIndex}(lIndex),k)*(x(l2{NIndex}(lIndex),k));
+                        xNonLin(lIndex,1) = xLin(l1{NIndex}(lIndex),k)*(xLin(l2{NIndex}(lIndex),k));
                     end
-                    xAP(:,windowIndex) = [x(:,k);xTDLAux];
+                    xAP(:,windowIndex) = [xLin(:,k);xNonLin];
 
                 end
 
@@ -119,24 +127,37 @@ for barGammaNonLinIndex = 1:length(barGammaNonLin)
                 e(k) = d(k) - w(:,k)'*xAP(:,1);
                 absoluteValueError = abs(e(k));
 
+                muLin(k) = 1 - barGammaLin/absoluteValueError;
+                muNonLin(k) = 1 - barGammaNonLin(barGammaNonLinIndex)/absoluteValueError;
+                G1(:,:,k) = diag(((1 - kappa*muLin(k))/N(5)) + (kappa*muLin(k)*abs(w1(:,k))/norm(w1(:,k),1)));
+                G2(:,:,k) = diag(((1 - kappa*muNonLin(k))/(adapFiltLength(5)-N(5))) + (kappa*muNonLin(k)*abs(w2(:,k))/norm(w2(:,k),1)));
+                G(:,:,k) = [G1(:,:,k);G2(:,:,k)];
+                
                 if absoluteValueError > barGammaLin
-                    muLin(k) = 1 - barGammaLin/absoluteValueError;
-                    G(1:N(5),1:N(5),k) = diag(((1 - kappa*muLin(k))/N(5)) + (kappa*muLin(k)*abs(w(1:N(5),k))/norm(w(1:N(5),k),1)));
-                    w(1:N(5),k+1) = w(1:N(5),k) + muLin(k)*G(1:N(5),1:N(5),k)*xAP(1:N(5),:)*((xAP'*G(:,:,k)*xAP+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
+%                     muLin(k) = 1 - barGammaLin/absoluteValueError;
+%                     G1(:,:,k) = diag(((1 - kappa*muLin(k))/N(5)) + (kappa*muLin(k)*abs(w1(:,k))/norm(w1(:,k),1)));
+%                     G(1:N(5),1:N(5),k) = diag(((1 - kappa*muLin(k))/N(5)) + (kappa*muLin(k)*abs(w(1:N(5),k))/norm(w(1:N(5),k),1)));
+                    w1(:,k+1) = w1(:,k) + muLin(k) * G1(:,:,k)*xLin(:,k)*((xAP'* G(:,:,k)*xAP+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
+%                     w(1:N(5),k+1) = w(1:N(5),k) + muLin(k)*G(1:N(5),1:N(5),k)*xAP(1:N(5),:)*((xAP'*G(:,:,k)*xAP+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
                     countLin(k,index) = 1;
                 else
-                    w(1:N(5),k+1) = w(1:N(5),k);
+                    w1(:,k+1) = w1(:,k);
+%                     w(1:N(5),k+1) = w(1:N(5),k);
                 end
 
 
                 if absoluteValueError > barGammaNonLin(barGammaNonLinIndex)
-                    muNonLin(k) = 1 - barGammaNonLin(barGammaNonLinIndex)/absoluteValueError;
-                    G(N(5)+1:end,N(5)+1:end,k) = diag(((1 - kappa*muNonLin(k))/(adapFiltLength(5)-N(5))) + (kappa*muNonLin(k)*abs(w(N(5)+1:end,k))/norm(w(N(5)+1:end,k),1)));
-                    w(N(5)+1:end,k+1) = w(N(5)+1:end,k) + muNonLin(k)*G(N(5)+1:end,N(5)+1:end,k)*...
-                        xAP(N(5)+1:end,:)*((xAP'*G(:,:,k)*xAP+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
+%                     muNonLin(k) = 1 - barGammaNonLin(barGammaNonLinIndex)/absoluteValueError;
+%                     G2(:,:,k) = diag(((1 - kappa*muNonLin(k))/(adapFiltLength(5)-N(5))) + (kappa*muNonLin(k)*abs(w(N(5)+1:end,k))/norm(w(N(5)+1:end,k),1)));
+
+%                     G(N(5)+1:end,N(5)+1:end,k) = diag(((1 - kappa*muNonLin(k))/(adapFiltLength(5)-N(5))) + (kappa*muNonLin(k)*abs(w(N(5)+1:end,k))/norm(w(N(5)+1:end,k),1)));
+%                     w(N(5)+1:end,k+1) = w(N(5)+1:end,k) + muNonLin(k)*G(N(5)+1:end,N(5)+1:end,k)*...
+%                         xAP(N(5)+1:end,:)*((xAP'*G(:,:,k)*xAP+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
+                    w2(:,k+1) = w2(:,k) + muNonLin(k)*G2(:,:,k)*xNonLin*((xAP'*G(:,:,k)*xAP+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
                     countNonLin(k,index) = 1;
                 else
-                    w(N(5)+1:end,k+1) = w(N(5)+1:end,k);
+                    w2(:,k+1) = w2(:,k);
+%                     w(N(5)+1:end,k+1) = w(N(5)+1:end,k);
                 end
 
                 if countLin(k,index) && countNonLin(k,index)
