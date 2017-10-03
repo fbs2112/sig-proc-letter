@@ -96,7 +96,7 @@ for barGammaNonLinIndex = 1:length(barGammaNonLin)
 
             end
 
-            w = zeros(adapFiltLength(NIndex),globalLength) + 1e-6;
+            w = zeros(adapFiltLength(NIndex),globalLength) + 1e-6;muNonLin(k) = 1 - barGammaNonLin(barGammaNonLinIndex)/absoluteValueError;
             
             w1 = zeros(N(5),globalLength) + 1e-6;
             w2 = zeros(adapFiltLength(NIndex) - N(5),globalLength) + 1e-6;
@@ -128,18 +128,13 @@ for barGammaNonLinIndex = 1:length(barGammaNonLin)
 
                 e(k) = d(k) - w(:,k)'*xAP(:,1);
                 absoluteValueError = abs(e(k));
-
-                muLin(k) = 1 - barGammaLin/absoluteValueError;
-                muNonLin(k) = 1 - barGammaNonLin(barGammaNonLinIndex)/absoluteValueError;
-                G(1:N(5),1:N(5),k) = diag(((1 - kappa*muLin(k))/N(5)) + (kappa*muLin(k)*abs(w1(:,k))/norm(w1(:,k),1)));
-                G(N(5)+1:end,N(5)+1:end,k) = diag(((1 - kappa*muNonLin(k))/(adapFiltLength(5)-N(5))) + (kappa*muNonLin(k)*abs(w2(:,k))/norm(w2(:,k),1)));
                 
                 if absoluteValueError > barGammaLin
-%                     muLin(k) = 1 - barGammaLin/absoluteValueError;
+                    muLin(k) = 1 - barGammaLin/absoluteValueError;
 %                     G(1:N(5),1:N(5),k) = diag(((1 - kappa*muLin(k))/N(5)) + (kappa*muLin(k)*abs(w(1:N(5),k))/norm(w(1:N(5),k),1)));
-%                     G(1:N(5),1:N(5),k) = diag(((1 - kappa*muLin(k))/N(5)) + (kappa*muLin(k)*abs(w1(:,k))/norm(w1(:,k),1)));
+                    G(1:N(5),1:N(5),k) = diag(((1 - kappa*muLin(k))/N(5)) + (kappa*muLin(k)*abs(w1(:,k))/norm(w1(:,k),1)));
 
-                    w1(:,k+1) = w1(:,k) + muLin(k) * G(1:N(5),1:N(5),k)*xLin(:,k)*((xAP'* G(:,:,k)*xAP+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
+                    w1(:,k+1) = w1(:,k) + muLin(k) * G(1:N(5),1:N(5),k)*xLin(:,k)*((xLin(:,k)'* G(1:N(5),1:N(5),k)*xLin(:,k)+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
 %                     w(1:N(5),k+1) = w(1:N(5),k) + muLin(k)*G(1:N(5),1:N(5),k)*xAP(1:N(5),:)*((xAP'*G(:,:,k)*xAP+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
                     countLin(k,index) = 1;
                 else
@@ -149,14 +144,14 @@ for barGammaNonLinIndex = 1:length(barGammaNonLin)
 
 
                 if absoluteValueError > barGammaNonLin(barGammaNonLinIndex)
-%                     muNonLin(k) = 1 - barGammaNonLin(barGammaNonLinIndex)/absoluteValueError;
+                    muNonLin(k) = 1 - barGammaNonLin(barGammaNonLinIndex)/absoluteValueError;
 
 %                     G(N(5)+1:end,N(5)+1:end,k) = diag(((1 - kappa*muNonLin(k))/(adapFiltLength(5)-N(5))) + (kappa*muNonLin(k)*abs(w(N(5)+1:end,k))/norm(w(N(5)+1:end,k),1)));
-%                     G(N(5)+1:end,N(5)+1:end,k) = diag(((1 - kappa*muNonLin(k))/(adapFiltLength(5)-N(5))) + (kappa*muNonLin(k)*abs(w2(:,k))/norm(w2(:,k),1)));
+                    G(N(5)+1:end,N(5)+1:end,k) = diag(((1 - kappa*muNonLin(k))/(adapFiltLength(5)-N(5))) + (kappa*muNonLin(k)*abs(w2(:,k))/norm(w2(:,k),1)));
 
 %                     w(N(5)+1:end,k+1) = w(N(5)+1:end,k) + muNonLin(k)*G(N(5)+1:end,N(5)+1:end,k)*...
 %                         xAP(N(5)+1:end,:)*((xAP'*G(:,:,k)*xAP+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
-                    w2(:,k+1) = w2(:,k) + muNonLin(k)*G(N(5)+1:end,N(5)+1:end,k)*xNonLin*((xAP'*G(:,:,k)*xAP+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
+                    w2(:,k+1) = w2(:,k) + muNonLin(k)*G(N(5)+1:end,N(5)+1:end,k)*xNonLin*((xNonLin'*G(N(5)+1:end,N(5)+1:end,k)*xNonLin+gamma*eye(L(LIndex)+1))\eye(L(LIndex)+1))*conj(e(k))*u;
                     countNonLin(k,index) = 1;
                 else
                     w2(:,k+1) = w2(:,k);
@@ -188,6 +183,6 @@ for barGammaNonLinIndex = 1:length(barGammaNonLin)
 end
 
 
-save(['.' filesep 'results' filesep 'results4.mat'],'w3','e3','meanCountLin','meanCountNonLin','meanCountTotal');
+save(['.' filesep 'results' filesep 'results5.mat'],'w3','e3','meanCountLin','meanCountNonLin','meanCountTotal');
 
 rmpath(['..' filesep '..' filesep 'simParameters' filesep]);

@@ -19,64 +19,40 @@ figProp = struct( 'size' , 24 , 'font' ,fontname , 'lineWidth' , linewidth, 'fig
 
 % fileVector = {'teste6' 'teste5' 'teste4' 'teste' 'teste2'};
 
-fileVector = {'results3'};
+fileVector = {'results4'};
 
 
 for l = 1:length(fileVector)
     
     load([fileVector{l} '.mat']);
-%     convergenceSample2 = zeros(size(e4,1),size(e4,2));
-    for i = 1:size(e3,1)
-        for j = 1:1%size(e4,2)
+    for i = 1:size(e3,2)
+        figure
+        for j = 1:size(e3,1)
             
-                x = e3{i,j};
-%                 count = meanCount2{i,j};
-                
-%                 count{1} = zeros(10000,1);
-%             for k = 1:size(x,1)
-%                 figure
+                x = e3{j,i};
                 aux = find(x,1);
-                xAux = 10*log10(x(aux:4999));
+                xAux = 10*log10(x(aux:4999 + aux));
                 plot(xAux)
                 
                 hold on
-%                 xAux2 = flipud(10*log10(x{1}(aux:4999)));
-%                 plot(10*log10((x{1}(aux:end))))
-%                 hold on
-%                 y(i,j) = mean(10*log10((x{1}(4999 - 999:4999))));
-%                 stdMse(i,j,l) = std(10*log10((x{1}(4999 - 999:4999))));
-%                 convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) < y(i,j),1,'first');
-% %                 convergenceSample2(i,j) = find(10*log10(x{1}(aux+1:4999)) < y(i,j)- 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); %nao funcionou por causa de undershoot
-%                 
-%                 convergenceSample2(i,j,l) = find(10*log10(x{1}(aux+1:4999)) < y(i,j)+ 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); % funciona com  algumas ressalvas
+                updatesLin = mean(meanCountLin{j,i}(aux:4999 + aux))*100;
+                updatesNonLin = mean(meanCountNonLin{j,i}(aux:4999 + aux))*100;
+                updatesTotal = mean(meanCountTotal{j,i}(aux:4999 + aux))*100;
+                
+                updatesAux(i,j,:) = [updatesLin;updatesNonLin];
+                
             
         end
+        H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$','$L = 4$');
+        set(H,'interpreter','latex')
+        ylim([-15 10]);
+        
+        ylabel('MSE [dB]','interpreter','latex');
+        xlabel('Iterations [$k$]','interpreter','latex');
+        xlim([0 3000])
     end
-%   convergenceSample2(l) = find(10*log10(x{1}(aux+1:4999)) < y(i,j)+ 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); % funciona com  algumas ressalvas
-  updatesLin(l) = mean(meanCountLin{1}(aux:5000))*100;
-  updatesNonLin(l) = mean(meanCountNonLin{1}(aux:5000))*100;
-  updatesTotal(l) = mean(meanCountTotal{1}(aux:5000))*100;
+  
 end
-
-H = legend('$\bar{\gamma} = 4\gamma$','$\bar{\gamma} = 2.5\gamma$','$\bar{\gamma} = 2\gamma$','$\bar{\gamma} = 1.5\gamma$','$\bar{\gamma} = 1\gamma$','$\bar{\gamma} = 0.5\gamma$');
-set(H,'interpreter','latex')
-% ylim([-15 10]);
-
-ylabel('MSE [dB]','interpreter','latex');
-xlabel('Iterations [$k$]','interpreter','latex');
-xlim([0 3000])
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
