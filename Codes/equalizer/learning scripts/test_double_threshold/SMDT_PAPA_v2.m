@@ -96,7 +96,7 @@ for barGammaNonLinIndex = 1:length(barGammaNonLin)
 
             end
 
-            w = zeros(adapFiltLength(NIndex),globalLength) + 1e-6;muNonLin(k) = 1 - barGammaNonLin(barGammaNonLinIndex)/absoluteValueError;
+            w = zeros(adapFiltLength(NIndex),globalLength) + 1e-6;
             
             w1 = zeros(N(5),globalLength) + 1e-6;
             w2 = zeros(adapFiltLength(NIndex) - N(5),globalLength) + 1e-6;
