@@ -17,10 +17,10 @@ predictingOrder = 1;
 
 % data = csvread('BeijingPM20100101_20151231.csv',[);
 
-data = textscan('BeijingPM20100101_20151231.csv','%s', 16);
+% data = textscan('BeijingPM20100101_20151231.csv','%s', 16);
 
-% dataAux = xlsread('AirQualityUCI.xlsx');
-% data = dataAux(:,6);
+dataAux = xlsread('AirQualityUCI.xlsx');
+data = dataAux(:,15);
 
 data = data(abs(data)~=200);
 
@@ -33,7 +33,7 @@ globalLength = 1500;
 data = buffer(data,globalLength);
 % data = data./var(data);
 % 
-N = 10;
+N = 65;
 
 auxMatrix = triu(ones(N));
 [l1,l2] = find(auxMatrix);
@@ -52,7 +52,7 @@ e3 = cell(length(L));
 powerNoise = 0.3;
 
 
-% adapFiltLength = N;
+adapFiltLength = N;
 mu = 0.01;
 gamma = 1e-3;
 
@@ -106,9 +106,11 @@ for LIndex = 1:length(L)
                 xTDLAux(lIndex,1) = xAP(l1(lIndex),1)*(xAP(l2(lIndex),1));
             end
             
-            xAP = [xAP;xTDLAux];
+%             xAP = [xAP;xTDLAux];
             
             e(k) = x(k) - w(:,k)'*xAP;
+            
+            ePlot(k) = (x(k) - w(:,k)'*xAP)/x(k);
             %
             G(:,:,k) = diag(((1 - kappa*mu)/adapFiltLength) + (kappa*mu*abs(w(:,k))/norm(w(:,k),1)));
             w(:,k+1) = w(:,k) + mu*G(:,:,k)*xAP*((xAP'*G(:,:,k)*xAP+gamma*eye(L+1))\eye(L+1))*conj(e(k));
@@ -116,6 +118,7 @@ for LIndex = 1:length(L)
         
        wIndex(:,:,index) = conj(w(:,1:globalLength));
        e2(:,index) = abs(e).^2;
+       e2Plot(:,index) = abs(ePlot).^2;
 %         for i = 1:1000
 % %             n = randn(maxRuns,1);
 % %             n = n*sqrt(powerNoise/var(n));
@@ -181,10 +184,14 @@ for LIndex = 1:length(L)
     
     e3{LIndex} = mean(e2(predictingOrder + N + L(LIndex):end,:),2);
     
+    e3Plot{LIndex} = mean(e2Plot(predictingOrder + N + L(LIndex):end,:),2);
+    
 end
 % save(['.' filesep 'results' filesep 'results01.mat'],'w3','e3','misalignment');
 
 figure
 plot(10*log10(e3{1,1}));
+figure
+plot(10*log10(e3Plot{1,1}));
 
 % plot(10*log10(mean(e2,2)))
