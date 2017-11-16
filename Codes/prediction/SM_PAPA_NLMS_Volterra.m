@@ -40,9 +40,9 @@ powerNoise = 0.3;
 
 
 % adapFiltLength = N;
-mu = 0.1;
+% mu = 0.1;
 gamma = 1e-3;
-
+barGamma = 6;
 monteCarloLoops = size(data,2);
 globalLength = globalLength + predictingOrder + N - 2;
 
@@ -51,7 +51,7 @@ globalLength = globalLength + predictingOrder + N - 2;
 %  L = 0;
 
 % for i = 1:2
-%
+
 %     if i == 2
 %         N = 65;
 %         adapFiltLength = N;
@@ -92,23 +92,25 @@ for LIndex = 1:length(L)
                 xTDLAux(lIndex,1) = xAP(l1(lIndex),1)*(xAP(l2(lIndex),1));
             end
             
-           
-                xAP = [xAP;xTDLAux];
-            
+            xAP = [xAP;xTDLAux];
             
             y(k,index) = w(:,k)'*xAP;
             
             e(k) = x(k) - y(k,index);
             
-            
-            
             ePlot(k) = e(k)/(abs(x(k)) + 1e-6);
             
-         
-            G(:,:,k) = diag(((1 - kappa*mu)/adapFiltLength) + (kappa*mu*abs(w(:,k))/norm(w(:,k),1)));
             
-%             G(:,:,k) = eye(adapFiltLength,adapFiltLength);
-            w(:,k+1) = w(:,k) + mu*G(:,:,k)*xAP*((xAP'*G(:,:,k)*xAP+gamma*eye(L+1))\eye(L+1))*conj(e(k));
+            absoluteValueError = abs(e(k));
+            
+            if absoluteValueError > barGamma
+                mu(k) = 1 - barGamma/absoluteValueError;
+                G(:,:,k) = diag(((1 - kappa*mu(k))/adapFiltLength) + (kappa*mu(k)*abs(w(:,k))/norm(w(:,k),1)));
+                w(:,k+1) = w(:,k) + mu(k)*G(:,:,k)*xAP*((xAP'*G(:,:,k)*xAP+gamma*eye(L+1))\eye(L+1))*conj(e(k));
+                count(k,index) = 1;
+            else
+                w(:,k+1) = w(:,k);
+            end
         end
         
         wIndex(:,:,index) = conj(w(:,1:globalLength));
@@ -121,21 +123,24 @@ for LIndex = 1:length(L)
     e3{LIndex} = mean(e2(predictingOrder + N + L(LIndex):end,:),2);
     
     e3Plot{LIndex} = mean(e2Plot(predictingOrder + N + L(LIndex):end,:),2);
-    
+    meanCount{LIndex} = mean(count(predictingOrder + N + L(LIndex):end),2);
 end
-save(['.' filesep 'results' filesep 'resultsPAPA.mat'],'e3','e3Plot','y');
+save(['.' filesep 'results' filesep 'resultsSMPAPA.mat'],'e3','e3Plot','meanCount','y');
 
 %     figure
 %     plot((10*log10(e3{1,1})));
 % %     ylim([-30 60]);
 %     figure
 %     plot(10*log10(e3Plot{1,1}));
-% 
+%
 %     figure
 %     plot(200:400,data(200:400,index),'*-');
 %     hold on
 %     plot(200:400,y(200:400,index),'r*-');
-
-%     ylim([-50 40]);
-
-% end
+%
+% %
+%
+% % end
+%
+%
+%  mean(meanCount{1}(5:end))*100

@@ -42,16 +42,17 @@ powerNoise = 0.3;
 % adapFiltLength = N;
 mu = 0.1;
 gamma = 1e-3;
+lambda = 0.95;
 
 monteCarloLoops = size(data,2);
-globalLength = globalLength + predictingOrder + N - 2;
 
+globalLength = globalLength + predictingOrder + N - 2;
 
 %  adapFiltLength = N;
 %  L = 0;
 
 % for i = 1:2
-%
+
 %     if i == 2
 %         N = 65;
 %         adapFiltLength = N;
@@ -71,6 +72,9 @@ for LIndex = 1:length(L)
         e = zeros(globalLength,1);
         G = zeros(adapFiltLength,adapFiltLength,globalLength);
         %             x = zeros(globalLength,1);
+        Sd = zeros(adapFiltLength,adapFiltLength,globalLength);
+        Sd(:,:,predictingOrder + N + L(LIndex)-1) = eye(adapFiltLength)*(1-lambda)*signalPower;
+        psi = zeros(adapFiltLength,globalLength);
         
         
         
@@ -92,23 +96,21 @@ for LIndex = 1:length(L)
                 xTDLAux(lIndex,1) = xAP(l1(lIndex),1)*(xAP(l2(lIndex),1));
             end
             
-           
                 xAP = [xAP;xTDLAux];
             
-            
-            y(k,index) = w(:,k)'*xAP;
+            y(k,index) = w(:,k-1)'*xAP;
             
             e(k) = x(k) - y(k,index);
             
             
-            
             ePlot(k) = e(k)/(abs(x(k)) + 1e-6);
             
-         
-            G(:,:,k) = diag(((1 - kappa*mu)/adapFiltLength) + (kappa*mu*abs(w(:,k))/norm(w(:,k),1)));
             
-%             G(:,:,k) = eye(adapFiltLength,adapFiltLength);
-            w(:,k+1) = w(:,k) + mu*G(:,:,k)*xAP*((xAP'*G(:,:,k)*xAP+gamma*eye(L+1))\eye(L+1))*conj(e(k));
+            psi(:,k) = Sd(:,:,k-1)*xAP;
+            
+            Sd(:,:,k) = (1/lambda)*(Sd(:,:,k-1)-((psi(:,k)*psi(:,k).')/(lambda+psi(:,k).'*xAP)));
+            
+            w(:,k) = w(:,k-1) + conj(e(k))*Sd(:,:,k)*xAP;
         end
         
         wIndex(:,:,index) = conj(w(:,1:globalLength));
@@ -123,19 +125,19 @@ for LIndex = 1:length(L)
     e3Plot{LIndex} = mean(e2Plot(predictingOrder + N + L(LIndex):end,:),2);
     
 end
-save(['.' filesep 'results' filesep 'resultsPAPA.mat'],'e3','e3Plot','y');
+save(['.' filesep 'results' filesep 'resultsRLS.mat'],'e3','e3Plot','y');
 
 %     figure
 %     plot((10*log10(e3{1,1})));
 % %     ylim([-30 60]);
 %     figure
 %     plot(10*log10(e3Plot{1,1}));
-% 
+%
 %     figure
-%     plot(200:400,data(200:400,index),'*-');
+%     plot(200:400,data(200:400,index-1),'*-');
 %     hold on
-%     plot(200:400,y(200:400,index),'r*-');
-
+%     plot(200:400,y(200:400,index-1),'r*-');
+% %
 %     ylim([-50 40]);
 
 % end
