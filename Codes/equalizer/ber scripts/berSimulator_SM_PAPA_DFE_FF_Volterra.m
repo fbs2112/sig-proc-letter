@@ -11,14 +11,14 @@ addpath(['..' filesep 'simParameters']);
 
 load paramDFE_FF.mat;
 load param_feedforwardEq.mat;
-load results43.mat;
+load results54.mat;
 
 ber = zeros(size(w4,1),size(w4,2),length(SNR));
 
 for SNRIndex = 1:length(SNR)
-   for FFIndex = 1:length(feedforwardLength)
+   for FFIndex = 3:length(feedforwardLength)
        FFIndex
-       for FBIndex = 1:length(feedbackLength)
+       for FBIndex = 1:1%length(feedbackLength)
            FBIndex
             equalyzerFilter = [];
             berAux = zeros(monteCarloLoops,1);
@@ -136,7 +136,7 @@ for SNRIndex = 1:length(SNR)
 end
 
 
-save(['.' filesep 'results' filesep 'resultsBER07.mat'],'SNR','ber');
+save(['.' filesep 'results' filesep 'resultsBER18.mat'],'SNR','ber');
 
 rmpath(['..' filesep 'berParameters']);
 rmpath(['..' filesep 'learning scripts' filesep 'results']);

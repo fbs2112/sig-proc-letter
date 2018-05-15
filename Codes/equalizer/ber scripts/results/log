@@ -1,4 +1,4 @@
-resultsBER01: resultados para PAPA NLMS Volterra com 1000 loops de montecarlo com canal 2 modificado;
+resultsBER01: resultados para PAPA NLMS Volterra com 1000 loops de montecarlo com canal 2 modificado;   
 
 resultsBER02: resultados para PAPA NLMS DFE FF e FB com 1000 loops de montecarlo com canal 2 modificado;
 
@@ -30,3 +30,12 @@ resultsBER14: resultados para RLS DFE FF e FB com 1000 loops de montecarlo com c
 resultsBER15: resultados para RLS DFE FF com 1000 loops de montecarlo com canal 2 modificado;
 
 resultsBER16: resultados para RLS DFE FB com 1000 loops de montecarlo com canal 2 modificado; 
+
+
+resultsBER17: resultados para SM-PAPA NLMS Volterra com memória maior;
+
+resultsBER18: resultados para SM-PAPA NLMS DFE FF com memória maior;
+
+resultsBER19: resultados para SM-OBE Volterra com memória maior;
+
+resultsBER20: resultados para SM-OBE DFE FF com memória maior;

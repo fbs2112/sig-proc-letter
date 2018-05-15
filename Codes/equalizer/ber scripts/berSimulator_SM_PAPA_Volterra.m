@@ -10,22 +10,22 @@ addpath(['..' filesep 'berParameters']);
 addpath(['..' filesep 'simParameters']);
 load paramEq.mat;
 load param_feedforwardEq.mat;
-load results41.mat;
+load results53.mat;
 
 changingIteration = (blockLength + 100)/2;
 
 ber = zeros(size(w4,1),length(SNR));
 
 for SNRIndex = 1:length(SNR)
-    for NIndex = 1:size(w4,1)
-        equalyzerFilter = [];
+    for NIndex = 3:size(w4,1)
+        equalizerFilter = [];
         berAux = zeros(monteCarloLoops,1);
-        equalyzerFilter(:,1) = squeeze(w4{NIndex}{1}(:,4996));
-        equalyzerFilter(:,2) = squeeze(w4{NIndex}{1}(:,end-4));
+        equalizerFilter(:,1) = squeeze(w4{NIndex}{1}(:,4996));
+        equalizerFilter(:,2) = squeeze(w4{NIndex}{1}(:,end-4));
        
         for index = 1:monteCarloLoops
             index
-            equalyzedSignal = zeros(numberOfSymbols,1);
+            equalizedSignal = zeros(numberOfSymbols,1);
 
             binaryInputData = randi([0,1],blockLength + 100,1);
             binaryInputData = reshape(binaryInputData,[],numberOfBits);
@@ -72,14 +72,6 @@ for SNRIndex = 1:length(SNR)
     
             for k = N(NIndex):length(pilot) 
                 
-                
-%                 if k >= changingIteration
-%                     
-%                     channelIndex = 2;
-%                 else
-%                     channelIndex = 1;
-%                 end
-                
                 x = xAux(k:-1:k-N(NIndex)+1,channelIndex);
 
                 xTDLAux = zeros(length(l1{NIndex}),1);
@@ -90,13 +82,13 @@ for SNRIndex = 1:length(SNR)
 
                 xAP = [x;xTDLAux];
 
-                equalyzedSignal(k,1) =  equalyzerFilter(:,channelIndex)'*xAP;
+                equalizedSignal(k,1) =  equalizerFilter(:,channelIndex)'*xAP;
 
             end
-            [corr,lags] = xcorr(equalyzedSignal,xAux(N(NIndex):end,1));
+            [corr,lags] = xcorr(equalizedSignal,xAux(N(NIndex):end,1));
             [~,idx] = max(abs(corr));
             delay = abs(lags(idx));
-            decDemodSignal = pamdemod(equalyzedSignal,pamOrder,0,'gray');
+            decDemodSignal = pamdemod(equalizedSignal,pamOrder,0,'gray');
             binaryOutputData = de2bi(decDemodSignal,numberOfBits);
 
             berAux(index) = sum(sum(abs(binaryOutputData(delay+1:(blockLength/2) + delay,:) - binaryInputData(1:(blockLength/2),:))))./blockLength;
@@ -108,7 +100,7 @@ for SNRIndex = 1:length(SNR)
 end
 
 
-save(['.' filesep 'results' filesep 'resultsBER05.mat'],'SNR','ber');
+save(['.' filesep 'results' filesep 'resultsBER17.mat'],'SNR','ber');
 
 rmpath(['..' filesep 'berParameters']);
 rmpath(['..' filesep 'learning scripts' filesep 'results']);
