@@ -20,7 +20,7 @@ for SNRIndex = 1:length(SNR)
     for NIndex = 3:size(w4,1)
         equalizerFilter = [];
         berAux = zeros(monteCarloLoops,1);
-        equalizerFilter(:,1) = squeeze(w4{NIndex}{1}(:,4996));
+        equalizerFilter(:,1) = squeeze(w4{NIndex}{1}(:,end));
         equalizerFilter(:,2) = squeeze(w4{NIndex}{1}(:,end-4));
        
         for index = 1:monteCarloLoops
