@@ -3,7 +3,7 @@ clc;
 close all;
 
 
-maxRuns = 10000; % max runs in a single independent trial
+maxRuns = 7000; % max runs in a single independent trial
 maxIt = 1000;    %number of independent trial
 signalPower = 1;    %desired input signal power
 noisePower = 1e-3;  %desired measurement noise power
@@ -60,7 +60,7 @@ auxMatrix = triu(ones(memoryChannelLength));
 [l1Pilot,l2Pilot] = find(auxMatrix);
 
 
-changingIteration = 5000;
+changingIteration = 10000;
 
 
 SNR = db2pow(30);
