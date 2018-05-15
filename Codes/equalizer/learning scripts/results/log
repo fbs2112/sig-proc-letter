@@ -82,6 +82,18 @@ results 51: resultados para RLS DFE FF com 1000 loops de montecarlo com canal 2 
 
 results 52: resultados para RLS DFE FB com 1000 loops de montecarlo com canal 2 modificado;
 
+%---------New simulations--------------
+
+results 53: resultados para SM-PNLMS Volterra com maior memória nos filtros; 
+
+results 54: resultados para SM-PNLMS Volterra DFE FF com maior memória nos filtros; 
+
+results 55: resultados para M-BEACON com maior memória nos filtros; 
+
+results 56: resultados para M-BEACON Volterra DFE FF com maior memória nos filtros; 
+
+
+
 
 
 

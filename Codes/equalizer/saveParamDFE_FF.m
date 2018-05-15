@@ -3,7 +3,7 @@ clc;
 close all;
 
 
-maxRuns = 10000; % max runs in a single independent trial
+maxRuns = 7000; % max runs in a single independent trial
 maxIt = 1000;    %number of independent trial
 signalPower = 1;    %desired input signal power
 noisePower = 1e-3;  %desired measurement noise power
@@ -15,8 +15,6 @@ M = 10;            %length of the adaptiv filter in SML case
 mu = 0.5;         %step size
 
 h(:,1) = [0.5 3 5 0 0.3 0 0 1.2 0].';
-% h(:,2) = [0.5 3 0 0.5 0.001 0.3 0 0 0].';
-
 h(:,2) = [2 0 0 0.2 0.3 -0.7 0 0 0].'; 
 
 h1 = [0.544 -0.252 0.593 0.236 -0.077 0.156 -0.5 0.025 -0.023 0.099].';
@@ -38,12 +36,8 @@ volterraFFFlag = 1;
 volterraFBFlag = 0;
 
 
-feedforwardLength = 1:5;
+feedforwardLength = 7:9;
 feedbackLength = 1:5;
-
-
-% feedforwardLength = 6;
-% feedbackLength = 6;
 
 adaptfiltFF = zeros(length(feedforwardLength),1);
 l1FF = cell(length(feedforwardLength),1);
@@ -91,7 +85,7 @@ barGamma = 4*sqrt(5*noisePower); %threshold for set-membership purposes
 
 
 numberOfBits = 2;
-changingIteration = 5000;
+changingIteration = 8000;
 
 pamOrder = 2^numberOfBits;
 

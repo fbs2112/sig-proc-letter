@@ -15,11 +15,10 @@ w4 = cell(length(feedforwardLength),length(feedbackLength));
 meanCount2 = cell(length(feedforwardLength),length(feedbackLength));
 
 
-for FFIndex = 1:length(feedforwardLength)
+for FFIndex = 3:length(feedforwardLength)
     FFIndex
-    for FBIndex = 1:length(feedbackLength)
+    for FBIndex = 1:1%length(feedbackLength)
          FBIndex
-%         delayVector = 1:feedforwardLength+length(h);%adapFiltLength + 10;
 
         delayVector = feedforwardLength(FFIndex)+1;
 
@@ -68,9 +67,6 @@ for FFIndex = 1:length(feedforwardLength)
                        xConc = [xPilot;(aux2)];
                        xAux2(i,1) = xConc.'*h(:,channelIndex);
                     end
-
-
-        %         n = randn(globalLength,1) + randn(globalLength,1)*1i;
 
                     n = randn(globalLength,1);
                     powerSignal = xAux2'*xAux2./(globalLength);
@@ -170,7 +166,7 @@ for FFIndex = 1:length(feedforwardLength)
     end
 end
 
-save(['.' filesep 'results' filesep 'results43.mat'],'w4','e4','meanCount2');
+save(['.' filesep 'results' filesep 'results54.mat'],'w4','e4','meanCount2');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 

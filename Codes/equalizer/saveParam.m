@@ -33,10 +33,7 @@ ho = kron(h1,h2); %unknown system in SML case
 %-------------------------------------------------------------------------%
 %Volterra set-membership
 
-N = 1:5;
-
-
-% N = 6;
+N = 7:9;
 
 l1 = cell(length(N),1);
 l2 = cell(length(N),1);

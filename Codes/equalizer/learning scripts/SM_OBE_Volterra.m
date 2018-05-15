@@ -18,7 +18,7 @@ w4 = cell(length(N),1);
 meanCount2 = cell(length(N),1);
 % maxIt = 20;
 
-for NIndex = 1:length(N)
+for NIndex = 3:length(N)
     delayVector2 = [N(NIndex)+1 N(NIndex)-2];
 
 %     delayVector = 1:N(NIndex)+length(h);%adapFiltLength + 10;
@@ -167,7 +167,7 @@ end
 
 
 
-save(['.' filesep 'results' filesep 'results45.mat'],'e4','w4','meanCount2');
+save(['.' filesep 'results' filesep 'results55.mat'],'e4','w4','meanCount2');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 

@@ -10,8 +10,6 @@ addpath(['..' filesep 'simParameters' filesep]);
 
 load paramEq.mat;
 
-% h([5 8],1) = 0.5;
-
 
 numberOfSymbols = 2^numberOfBits;
 
@@ -21,7 +19,7 @@ meanCount2 = cell(length(N),1);
 % maxIt = 20;
 % delayVector = 1:N+length(h);%adapFiltLength + 10;
 
-for NIndex = 1:length(N)
+for NIndex = 3:length(N)
     NIndex
     
     delayVector = N(NIndex)+1;%adapFiltLength + 10;
@@ -72,10 +70,7 @@ for NIndex = 1:length(N)
                    xConc = [xPilot;(aux2)];
                    xAux2(i,1) = xConc.'*h(:,channelIndex);
                 end
-
-
-    %         n = randn(globalLength,1) + randn(globalLength,1)*1i;
-
+                
                 n = randn(globalLength,1);
                 powerSignal = xAux2'*xAux2./(globalLength);
                 powerNoiseAux = n'*n/(globalLength);
@@ -150,7 +145,7 @@ for NIndex = 1:length(N)
 
 end
 
-save(['.' filesep 'results' filesep 'results41.mat'],'w4','e4','meanCount2');
+save(['.' filesep 'results' filesep 'results53.mat'],'w4','e4','meanCount2');
 
 rmpath(['..' filesep 'simParameters' filesep]);
 
