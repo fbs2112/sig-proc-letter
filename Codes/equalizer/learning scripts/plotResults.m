@@ -26,51 +26,51 @@ fileVector = {'testeWam' 'teste4'};
 fileVector = {'results01' 'results02'};
 
 
-for l = 1:length(fileVector)
-    
-    load([fileVector{l} '.mat']);
-%     convergenceSample2 = zeros(size(e4,1),size(e4,2));
-    for i = 1:size(e3,1)
-        for j = 1:1%size(e4,2)
-            
-                x = e3{i};
-%                 count = meanCount2{i,j};
-                
-%                 count{1} = zeros(10000,1);
-%             for k = 1:size(x,1)
-%                 figure
-                aux = find(x,1);
-                xAux = 10*log10(x(aux:4999));
-                plot(xAux)
-                
-                hold on
-%                 xAux2 = flipud(10*log10(x{1}(aux:4999)));
-%                 plot(10*log10((x{1}(aux:end))))
-%                 hold on
-%                 y(i,j) = mean(10*log10((x{1}(4999 - 999:4999))));
-%                 stdMse(i,j,l) = std(10*log10((x{1}(4999 - 999:4999))));
-%                 convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) < y(i,j),1,'first');
-% %                 convergenceSample2(i,j) = find(10*log10(x{1}(aux+1:4999)) < y(i,j)- 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); %nao funcionou por causa de undershoot
+% for l = 1:length(fileVector)
+%     
+%     load([fileVector{l} '.mat']);
+% %     convergenceSample2 = zeros(size(e4,1),size(e4,2));
+%     for i = 1:size(e3,1)
+%         for j = 1:1%size(e4,2)
+%             
+%                 x = e3{i};
+% %                 count = meanCount2{i,j};
 %                 
-%                 convergenceSample2(i,j,l) = find(10*log10(x{1}(aux+1:4999)) < y(i,j)+ 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); % funciona com  algumas ressalvas
-            
-        end
-    end
-%   convergenceSample2(l) = find(10*log10(x{1}(aux+1:4999)) < y(i,j)+ 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); % funciona com  algumas ressalvas
-  updatesLin(l) = mean(meanCountLin{1}(aux:5000))*100;
-  updatesNonLin(l) = mean(meanCountNonLin{1}(aux:5000))*100;
-  updatesTotal(l) = mean(meanCountTotal{1}(aux:5000))*100;
-end
-
-H = legend('$\bar{\gamma} = 4\gamma$','$\bar{\gamma} = 2.5\gamma$','$\bar{\gamma} = 2\gamma$','$\bar{\gamma} = 1.5\gamma$','$\bar{\gamma} = 1\gamma$','$\bar{\gamma} = 0.5\gamma$');
-set(H,'interpreter','latex')
-% ylim([-15 10]);
-
-ylabel('MSE [dB]','interpreter','latex');
-xlabel('Iterations [$k$]','interpreter','latex');
-
-
-
+% %                 count{1} = zeros(10000,1);
+% %             for k = 1:size(x,1)
+% %                 figure
+%                 aux = find(x,1);
+%                 xAux = 10*log10(x(aux:4999));
+%                 plot(xAux)
+%                 
+%                 hold on
+% %                 xAux2 = flipud(10*log10(x{1}(aux:4999)));
+% %                 plot(10*log10((x{1}(aux:end))))
+% %                 hold on
+% %                 y(i,j) = mean(10*log10((x{1}(4999 - 999:4999))));
+% %                 stdMse(i,j,l) = std(10*log10((x{1}(4999 - 999:4999))));
+% %                 convergenceSample(i,j) = find(10*log10(x{1}(aux:4999)) < y(i,j),1,'first');
+% % %                 convergenceSample2(i,j) = find(10*log10(x{1}(aux+1:4999)) < y(i,j)- 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); %nao funcionou por causa de undershoot
+% %                 
+% %                 convergenceSample2(i,j,l) = find(10*log10(x{1}(aux+1:4999)) < y(i,j)+ 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); % funciona com  algumas ressalvas
+%             
+%         end
+%     end
+% %   convergenceSample2(l) = find(10*log10(x{1}(aux+1:4999)) < y(i,j)+ 2*stdMse(i,j)*sign(2*stdMse(i,j)),1,'first'); % funciona com  algumas ressalvas
+%   updatesLin(l) = mean(meanCountLin{1}(aux:5000))*100;
+%   updatesNonLin(l) = mean(meanCountNonLin{1}(aux:5000))*100;
+%   updatesTotal(l) = mean(meanCountTotal{1}(aux:5000))*100;
+% end
+% 
+% H = legend('$\bar{\gamma} = 4\gamma$','$\bar{\gamma} = 2.5\gamma$','$\bar{\gamma} = 2\gamma$','$\bar{\gamma} = 1.5\gamma$','$\bar{\gamma} = 1\gamma$','$\bar{\gamma} = 0.5\gamma$');
+% set(H,'interpreter','latex')
+% % ylim([-15 10]);
+% 
+% ylabel('MSE [dB]','interpreter','latex');
+% xlabel('Iterations [$k$]','interpreter','latex');
+% 
+% 
+% 
 
 
 
@@ -144,7 +144,7 @@ xlabel('Iterations','interpreter','latex');
 %     set(gca,'ytick',[]);
 % % end
 
-formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-12' filesep 'mse_DFE'],'en' , figProp );
+% formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-12' filesep 'mse_DFE'],'en' , figProp );
 
 
 
@@ -313,7 +313,7 @@ for l = 1:length(fileVector)
 
 
     ylim([0 4])
-    formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-12' filesep 'mseColor'  num2str(fileVector(l))],'en' , figProp );
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-12' filesep 'mseColor'  num2str(fileVector(l))],'en' , figProp );
 % 
 
 
@@ -383,15 +383,103 @@ for i = 4:5
        ylabel('MSE [dB]','interpreter','latex');
     end
     
-    formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-12' filesep 'mse_FF_Eq' num2str(i)],'en' , figProp );
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-12' filesep 'mse_FF_Eq' num2str(i)],'en' , figProp );
 end
+
+
+
+
+close all
+fileVector = [53 55];
+
+for i = 3:3
+    figure
+
+    for l = 1:length(fileVector)
+
+        load(['results' num2str(fileVector(l)) '.mat']);
+
+        x = e4{i};
+%             for k = 1:size(x,1)
+        aux = find(x{1},1);
+
+        plot(10*log10((x{1}(aux:end))))
+
+        mse(i,l) = mean(10*log10((x{1}(4999 - 999:4999))));
+        stdMse(i,l) = std(10*log10((x{1}(4999 - 999:4999))));
+        convergenceSample2(i,l) = find(10*log10(x{1}(aux:4999)) < mse(i,l)+2*stdMse(i,l)*sign(2*stdMse(i,l)),1,'first');
+                 
+        hold on
+
+        xlim([0 7000]);
+
+    end
+%     ylabel('MSE [dB]','interpreter','latex');
+    xlabel('Iterations','interpreter','latex');
+    H = legend('VSM-PNLMS','VM-BEACON');
+
+    set(H,'interpreter','latex')
+    ylim([-15 10]);
+    
+    if i > 4
+        set(gca,'ytick',[]);
+    else
+       ylabel('MSE [dB]','interpreter','latex');
+    end
+    
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-12' filesep 'mse_FF_Eq' num2str(i)],'en' , figProp );
+end
+
+
+
+close all
+fileVector = [54 56];
+
+for i = 3:3
+    figure
+
+    for l = 1:length(fileVector)
+
+        load(['results' num2str(fileVector(l)) '.mat']);
+
+        x = e4{i};
+%             for k = 1:size(x,1)
+        aux = find(x{1},1);
+
+        plot(10*log10((x{1}(aux:end))))
+
+        mse(i,l) = mean(10*log10((x{1}(4999 - 999:4999))));
+        stdMse(i,l) = std(10*log10((x{1}(4999 - 999:4999))));
+        convergenceSample2(i,l) = find(10*log10(x{1}(aux:4999)) < mse(i,l)+2*stdMse(i,l)*sign(2*stdMse(i,l)),1,'first');
+                 
+        hold on
+
+        xlim([0 7000]);
+
+    end
+%     ylabel('MSE [dB]','interpreter','latex');
+    xlabel('Iterations','interpreter','latex');
+    H = legend('VSM-PNLMS','VM-BEACON');
+
+    set(H,'interpreter','latex')
+    ylim([-15 10]);
+    
+    if i > 4
+        set(gca,'ytick',[]);
+    else
+       ylabel('MSE [dB]','interpreter','latex');
+    end
+    
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-12' filesep 'mse_FF_Eq' num2str(i)],'en' , figProp );
+end
+
 
 
 close all;
 
 
 
-fileVector = [41 45];
+fileVector = [41 42 43 44 45 46 47 48];
 
 
 for l = 1:length(fileVector)
@@ -500,7 +588,7 @@ for l = 1:length(fileVector)
     set(gca,'ytick',1:5);
 
     ylim([1 5])
-    formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-07' filesep 'update'  num2str(fileVector(l))],'en' , figProp );
+%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-07-07' filesep 'update'  num2str(fileVector(l))],'en' , figProp );
     
     
     
@@ -524,158 +612,7 @@ end
 
 
 
-% for l = 1:length(fileVector)
-%     
-%     load(['results' num2str(fileVector(l)) '.mat']);
-%     for i = 1:size(e4,1)
-%         for j = 1:size(e4,2)
-%             x = e4{i,j};
-% %             for k = 1:size(x,1)
-% %                 figure
-%                 aux = find(x{i+1},1);
-% 
-%                 plot(10*log10((x{i+1}(aux:end))))
-%                 H = legend('$N = 1$','$N = 2$','$N = 3$','$N = 4$','$N = 5$');
-%                 set(H,'interpreter','latex')
-%                 xlabel('Iterations','interpreter','latex');
-%                 ylabel('MSE (dB)','interpreter','latex');
-%                 ylim([-25 20]);    
-%                 xlim([0 10000]);
-%                 hold on
-% 
-% %                  title([num2str(l) 'N_{FF} = ' num2str(i) ', N_{FB} = ' num2str(j)])
-% %             end
-% %             close all;
-%         end
-%     end
-%     formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-09' filesep 'mseSMPAPA_Volterra'],'en' , figProp );
-
-% end
-
-
-
-
-
-
-
-
-
-
-
-
-% load testLen2.mat
-% 
-% 
-% 
-% for i = 1:size(e4,1)
-%     
-%     x = e4{i,1};
-%     for k = 1:size(x,1)
-%         figure
-%         aux = find(x{k},1);
-% 
-%         plot(10*log10((x{k}(aux:end))))
-%         title(['N = ' num2str(i)])
-% 
-%     end
-%     close all;
-%    
-% end
-%             
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% for i = 1:length(fileVector)
-%     
-%     if i > 9
-%         load(['results' num2str(fileVector(i)) '.mat']);
-%     else
-%         load(['results0' num2str(fileVector(i)) '.mat']);
-%     end
-%     
-% %     load teste.mat
-% %     for delay = 1:size(e3,1)
-% %         figure
-% %         for l = 1:size(e3,2)
-% %             aux = find(e3{delay},1);
-% % 
-% %             plot(10*log10((e3{delay}(aux:end))))
-% %             hold on;
-% %         end
-% % 
-% %         xlabel('Iterations','interpreter','latex');
-% %         ylabel('MSE (dB)','interpreter','latex');
-% % 
-% %         H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-% %         set(H,'interpreter','latex')
-% %     %     xlim([0 5000])
-% % 
-% %     end
-% %     close all
-% 
-%     bestDelay = 6;
-%     if i == 3 || i == 6
-%         bestDelay = 1;
-%     end
-% 
-%     figure
-%     for l = 1:size(e3,2)
-%         aux = find(e3{bestDelay},1);
-% 
-%         plot(10*log10((e3{bestDelay}(aux:end))))
-%         hold on;
-%     end
-% 
-%     xlabel('Iterations','interpreter','latex');
-%     ylabel('MSE (dB)','interpreter','latex');
-%     
-%     ylim([-25 5]);
-%     
-%     xlim([0 8000]);
-% 
-% %     H = legend('$L = 0$','$L = 1$','$L = 2$','$L = 3$');
-% %     set(H,'interpreter','latex')
-%     %     xlim([0 5000])
-%     
-% %     formatFig( gcf ,['.' filesep 'figs' filesep '2017-06-01' filesep 'mse' num2str(i)],'en' , figProp );
-%     if ismember(i,meanCountVector)
-%        
-% %         ct{auxIndex} = meanCount;
-%         
-%         if i < 9
-%         
-%         
-%             meanCountTran(auxIndex) = mean(meanCount{bestDelay}(find(meanCount{bestDelay},1):2000));
-%             meanCountSS(auxIndex) = mean(meanCount{bestDelay}(2001:4000));
-% 
-% 
-%             meanCountTran_2(auxIndex) = mean(meanCount{bestDelay}(4001:4001+2000));
-%             meanCountSS_2(auxIndex) = mean(meanCount{bestDelay}(4001+2000+1:end));
-% 
-%         else
-%             meanCountTran(auxIndex) = mean(meanCount{bestDelay}(find(meanCount{bestDelay},1):200));
-%             meanCountSS(auxIndex) = mean(meanCount{bestDelay}(201:4000));
-% 
-% 
-%             meanCountTran_2(auxIndex) = mean(meanCount{bestDelay}(4001:4001+200));
-%             meanCountSS_2(auxIndex) = mean(meanCount{bestDelay}(4001+200+1:end));
-%         end
-% 
-%         
-%          auxIndex = auxIndex + 1;
-%         
-%     end
-% 
-% end
-% 
-% 
-
-
-
+%
 
 
 
